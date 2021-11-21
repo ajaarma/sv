@@ -1,0 +1,299 @@
+<?xml version="1.0" ?>
+<config>
+  <!--Configuration file for the NGC-SNV pipeline-->
+  <version>V1</version>
+  <general>
+	  <author>aak64@cam.ac.uk</author>
+	  <date>02-04-2018</date> <!-- DD-MM-YY -->
+	  <dataDir> </dataDir>
+	  <genomeBuild>grch38</genomeBuild>
+	  <refDir>/rds/project/who1000/rds-who1000-wgs10k/WGS10K/ref</refDir>	
+	  <refFile>GRCh37/ensembl_b37_74/Homo_sapiens.GRCh37.74.dna.fasta</refFile>
+	  <annoRef>/rds/project/who1000-1/rds-who1000-cbrc/cbrcref/ref</annoRef>
+	  <exons>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/regions/refseq_ensembl_exons_8bp_allMT_hgmd_clinvar_20181016.bed</exons>
+	  <repos>/home/aak64/rds/hpc-work/REPOS/ngc_sv37</repos>
+			  <!-- <genders>/home/aak64/rds/hpc-work/DATA/20181113/manifest/genders_genomic.txt</genders> -->
+	  <samtools>/rds/project/who1000-1/rds-who1000-cbrc/user/cbrcmod/modules/out/modulebin/samtools/1.3/bin/</samtools>
+	  <bgzip>/rds/project/who1000-1/rds-who1000-cbrc/user/cbrcmod/modules/out/modulebin/samtools/1.3/bin/bgzip</bgzip>
+	  <bcftools>/rds/project/who1000-1/rds-who1000-cbrc/user/cbrcmod/modules/out/modulebin/samtools/1.3/bin/bcftools</bcftools>
+	<extName>.0based.</extName>
+	<!-- <extName>.default.</extName> -->
+
+  </general>
+  
+  <slurm>
+	  <dash>-</dash>
+	  <params1>
+		  <!-- <J>AnnotSV</J> -->
+	  	<J>vcfanno</J>
+		<!-- <A>RAYMOND-SL3-CPU</A> -->
+		<A>WGS10K-SL2-CPU</A>
+		<p>skylake</p>
+	  </params1>
+
+	  <doubDash>--</doubDash>
+	  <params2>	
+	  	<nodes>=1</nodes>
+	<!--	<array>=0-24</array> --> 
+		<ntasks>=1</ntasks>
+	  	<time>=36:00:00</time>
+		<mail-type>=FAIL,END</mail-type>
+		<mail-user>=aak64@cam.ac.uk</mail-user>
+		<output>%outFile%</output>
+		<error>%errorFile%</error>
+		<exclusive> </exclusive>
+	  </params2>
+  </slurm>
+
+  <module> 
+	  <value>purge</value>
+	  <value>load default-impi</value>
+	  <!--  <m3>load gcc/5.2.0</m3> -->
+	  <value>load samtools/1.3</value>
+	  <!--  <m5>load zlib/1.2.8</m5>
+	  <m6>load htslib/1.4</m6> -->
+	  <value>load vcftools/0.1.14</value>
+	  <value>load VEP/89</value>
+	  <value>load UCSCtools/20140819</value>
+	  <value>load xz/5.2.2</value>
+	  <value>load pcre/8.38</value>
+	  <value>load R/3.5.0</value>
+	  <value>load gcc/5.2.0</value>
+	  <value>load parallel</value>
+  </module>
+  
+  <annotsv> 
+	<binaries>/rds/project/who1000/rds-who1000-wgs10k/user/as2635/open/software/AnnotSV/latest/bin/AnnotSV</binaries>
+	<SVinputFile>%inputFile%</SVinputFile>
+	<genomeBuild>GRCh38</genomeBuild>
+	<!-- <bedtools>/home/aak64/rds/hpc-work/BINARIES/bedtools2/bin/bedtools</bedtools> -->
+	<bedtools>/rds/project/who1000-1/rds-who1000-cbrc/user/cbrcmod/modules/out/modulebin/bedtools/2.26.0/bin/bedtools</bedtools>
+	<SVinputInfo>1</SVinputInfo>
+	<outputDir>%outDir%</outputDir>
+	<outputFile>%outDir%</outputFile>
+	<svtBEDCol>5</svtBEDCol>
+	<typeOfAnnotation>full</typeOfAnnotation>
+	<reciprocal>yes</reciprocal>
+	<overlap>70</overlap>
+  </annotsv>
+
+  <vcfanno>
+	  <binaries>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/binaries/vcfanno/vcfanno</binaries>
+	  <lua>VCFANNO/custom_RO_min.lua</lua>
+	  <toml37>vcfanno_bed.conf.37.toml</toml37>
+	  <toml38>vcfanno_bed.conf.38.toml</toml38>
+	  <input>%inFile%</input>
+	  <output>%outFile%</output>
+	  <params>
+		  <value>ends</value>
+		  <value>permissive-overlap</value>
+	  </params>
+	  <p>45</p>
+	  <processBND>
+		  <binaries>processBNDVCF.py</binaries>
+		  <i>%inFile%</i>
+		  <o>%outFileName%</o>
+	  </processBND>
+	  <famOverlap>
+		  <binaries>execFamOverlap.py</binaries>
+		  <m>%manifestFile%</m>
+		  <f>%familyID%</f>
+		  <w>1000</w>
+	  </famOverlap>
+  </vcfanno>
+
+  <annoDB>
+	  <db>
+		  <value>gnomad</value>
+		  <value>ngc</value>
+		  <!--  <value>ensembl</value> -->
+		  <value>ens_trans</value>
+		  <value>ens_exon</value>
+		  <value>ref_gene</value>
+		  <value>ref_exon</value>
+		  <value>dbvar</value>
+		  <value>decipher</value>
+		  <value>user</value>
+		  <!--  <value>fam</value> -->
+	  </db>
+	  <dbPath>
+		  <GRCh37>
+			  <gnomad>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/gnomad/GRCh37/r2.1.1/gnomad_grch37.AC.AN.AF.sorted.bed.gz</gnomad>
+			  <ngc37>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/NGC_V1/GRCh37/NGC.samples.grch37.sorted.merged.bed.gz</ngc37>
+			  <ensembl></ensembl>
+			  <ens_trans>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh37/release-98/ensembl_grch37.transcript.0.sorted.merged.bed.gz</ens_trans>
+			  <ens_exon>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh37/release-98/ensembl_grch37.exons.0.sorted.merged.bed.gz</ens_exon>
+			  <ref_gene>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/RefSeq/GRCh37/r105_20190906/refseq_grch37.gene.0.sorted.merged.bed.gz</ref_gene>
+			  <ref_exon>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/RefSeq/GRCh37/r105_20190906/refseq_grch37.exons.0.sorted.merged.bed.gz</ref_exon>
+			  <dbvar>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh37/dbvar_grch37.CG.UR.CV.sorted.merged.gz</dbvar>
+			  <decipher>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/DECIPHER/GRCh37/decipher.grch37.sorted.merged.bed.gz</decipher>
+			  <user>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/user/promoter/grch37/user_grch37.0based.promoter.sorted.merged.bed.gz</user>
+		  </GRCh37>
+		  <GRCh38>
+			  <gnomad>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/gnomad/GRCh38/r2.1.1/gnomad_grch38.0based.AC.AN.AF.sorted.merged.bed.gz</gnomad>
+			  <ngc38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/NGC_V1/GRCh38/</ngc38>
+			  <ngclov>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/NGC_V1/GRCh38/liftover37/</ngclov>
+			  <ens_trans>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/release-98/ensembl_grch38.0based.transcript.0.sorted.merged.bed.gz</ens_trans>
+			  <ens_exon>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/release-98/ensembl_grch38.0based.exons.0.sorted.merged.bed.gz</ens_exon>
+			  <ref_gene>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/RefSeq/GRCh38/r109_20190905/refseq_grch38.0based.gene.0.sorted.merged.bed.gz</ref_gene>
+			  <ref_exon>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/RefSeq/GRCh38/r109_20190905/refseq_grch38.0based.exons.0.sorted.merged.bed.gz</ref_exon>
+			  <dbvar>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh38/dbvar_grch38.0based.CG.UR.CV.sorted.merged.bed.gz</dbvar>
+			  <decipher>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/DECIPHER/GRCh38/decipher.grch38.0based.sorted.merged.bed.gz</decipher>
+			  <user>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/user/promoter/grch38/user_grch38.0based.promoter.sorted.merged.bed.gz</user>
+		  </GRCh38>
+	  </dbPath>
+  </annoDB>
+
+  <combChromOut>
+	  <binaries>combineChromOutput.R</binaries>
+	  <i>%inpDir%</i>
+	  <o>%outDir%></o>
+	  <s>%OutFileName</s>
+  </combChromOut>
+
+
+  <extractGnomad> 
+	  <binaries>extractRelField.R</binaries>
+	  <i>%inFile%</i>
+	  <o>%outDir%</o>
+	  <s>%outFileName%</s>
+  </extractGnomad>
+
+  <processGnomad> 
+	  <binaries>processGnomadAnnotSV.py</binaries>
+	  <i>%inFile%</i>
+	  <o>%outDir%</o>
+	  <s>%outFileName%</s>
+  </processGnomad>
+  
+  <dbvar>
+	 <grch37>
+		 <clingen>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh37/nstd45/nstd45.GRCh37.variant_call.vcf.gz</clingen>
+		 <user>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh37/nstd51/nstd51.GRCh37.variant_call.vcf.gz</user>
+		 <clinvar>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh37/nstd102/nstd102.GRCh37.variant_call.vcf.gz</clinvar>
+  	 </grch37>
+	 <grch38>
+		 <clingen>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh38/nstd45/nstd45.GRCh38.variant_call.vcf.gz</clingen>
+		 <user>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh38/nstd51/nstd51.GRCh38.variant_call.vcf.gz</user>
+		 <clinvar>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh38/nstd102/nstd102.GRCh38.variant_call.vcf.gz</clinvar>
+	 </grch38>
+  </dbvar>
+
+  <ensembl>
+	  <grch37>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh37/release-98/Homo_sapiens.GRCh37.87.gtf.gz</grch37>
+	  <!-- <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/Homo_sapiens.GRCh38.96.gtf.gz</grch38> -->
+	  <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/release-98/Homo_sapiens.GRCh38.98.gtf.gz</grch38>
+		  <!-- <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/release-100/Homo_sapiens.GRCh38.100.gtf.gz</grch38> -->
+	  <ensVarAnnot>
+		  <ensCoordBin>extractCoord4Ensembl.py</ensCoordBin>
+		  <ensGrangeBin>writeGenomicRanges.R</ensGrangeBin>
+		  <i>%inFile%</i>
+		  <o>%outFile%</o>
+		  <c>%ngcID%</c>
+		  <g>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/genelist/previous/NGC_genelist_allNamesOnly-20181016.txt</g>
+		  <x38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/ensBioMart_grch38_v96_exon_info_190503.8bp.sorted.txt</x38>
+		  <x37>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh37/ensembl_grch37.exons.sorted.bed</x37>
+		  <t38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/ensBioMart_grch38_v96_transcript_info_190503.sorted.txt</t38>
+		  <t37>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh37/ensembl_grch37.transcript.sorted.bed</t37>
+		  <n>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/phenotypes/latest_PhenotypeInformation.txt</n>
+		  <d>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/hpo/feb-2019/ALL_SOURCES_ALL_FREQUENCIES_phenotype_to_genes.txt</d>
+		  <p>%pedFile%</p>
+	  </ensVarAnnot>
+	  <ensType>
+		  <offset>
+			  <transcript>1000</transcript>
+			  <!-- <transcript>0</transcript> -->
+			  <exons>50</exons>
+			  <!-- <exons>0</exons> -->
+		  </offset>
+	  </ensType>
+  </ensembl>
+
+  <refseq>
+	  <grch37>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/RefSeq/GRCh37/r105_20190906/GRCh37_latest_genomic.chr.gtf.gz</grch37>
+	  <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/RefSeq/GRCh38/r109_20190905/GRCh38_latest_genomic.chr.gtf.gz</grch38>
+	  <refType>
+		  <offset> 
+			   <gene>1000</gene> 
+				   <!-- <gene>0</gene> -->
+			   <exons>50</exons>
+			   <!-- <exons>0</exons> -->
+		  </offset>
+	  </refType>
+  </refseq>
+  <!--
+  <omim>
+	  <grch37>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/RefSeq/GRCh37/r105_20190906/GRCh37_latest_genomic.chr.gtf.gz</grch37>
+	  <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/RefSeq/GRCh38/r109_20190905/GRCh38_latest_genomic.chr.gtf.gz</grch38>
+	  <refType>
+		  <offset> 
+			  <gene>1000</gene>
+			  <exons>50</exons>
+		  </offset>
+	  </refType>
+  </omim>
+  -->
+
+  <gnomad>
+	  <grch37>/rds/project/flr24/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/gnomad/GRCh37/r2.1.1/gnomad_v2_sv.sites.bed</grch37>
+	  <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/gnomad/GRCh38/r2.1.1/gnomad_v2_sv.sites.liftover38.bed</grch38>
+  </gnomad>
+
+  <ngc>
+	  <LOVbin>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/scripts/software/UCSCtools/liftOver</LOVbin>
+	  <LOVchain>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/genomes/GRCh37_to_GRCh38.chain.gz</LOVchain>
+	  <grch37>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/NGC_V1/GRCh37/</grch37>
+	  <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/NGC_V1/GRCh38/</grch38>
+	  <!--<grch38LOV>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/NGC_V1/GRCh38/20190913/NGC.samples.grch37.Liftover.grch38.bed</grch38LOV>-->
+	  <grch38LOV>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/NGC_V1/GRCh38/liftover37/</grch38LOV>
+  </ngc>
+  
+  <decipher>
+	  <grch37>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/DECIPHER/GRCh37/DECIPHER_CNV_syndromes_20190603.bed</grch37>
+	  <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/DECIPHER/GRCh38/DECIPHER_CNV_syndromes_20190603.liftover38.bed</grch38>
+  </decipher>
+
+  <user> 
+	<grch37>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/user/promoter/grch37/Homo_sapiens.GRCh37.97.gtf.gz</grch37>
+	<grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/user/promoter/grch38/Homo_sapiens.GRCh38.100.gtf.gz</grch38>
+	<tag>promoter</tag>
+
+  </user>
+
+  <overlapMerge> 
+	  <ovBin>parseVCF.py</ovBin>
+	  <mergeBin>mergeAnnotVCF.py</mergeBin>
+     <!-- <ovFrac>0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0</ovFrac> -->
+	  <famOverlapFrac>True</famOverlapFrac>
+     <!-- <famOverlapFrac>False</famOverlapFrac> -->
+	  <ovFrac>0.7</ovFrac>
+  </overlapMerge>
+
+  	<par>
+	 	<grch37>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/regions/PAR/hg19_PAR.txt</grch37>
+	  	<grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/regions/PAR/hg38_PAR.txt</grch38>
+  	</par>
+  	<formatGT>
+		<flag>True</flag>
+		<scripts>formatGT.py</scripts>
+	</formatGT>
+
+	<imprint>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/genelist/imprinted_genes_CNV_20200424.txt</imprint>
+  
+  	<famFilter>
+	  	<famBin>familyFiltering.R</famBin>
+  	</famFilter>
+
+  	<query>
+		<offset>
+			<ins>50</ins>
+			<bnd>50</bnd>
+			<del></del>
+			<dup></dup>
+			<inv></inv>
+		</offset>
+  	</query>
+
+
+</config>
+

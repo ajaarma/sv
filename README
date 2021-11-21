@@ -1,0 +1,101 @@
+20190612
+##### Processing CLINVAR File ##############
+
+Clinvar file is processed for processing nstd45,nstd51 and nstd102 files inorder to produce list of variants to be annotated with vcfanno
+
+python processCLINVAR.py -i /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh37/nstd45/nstd45.GRCh37.variant_call.vcf.gz -o nstd45.GRCh37.SV.prc.txt -d CLINGEN
+
+python processCLINVAR.py -i /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh37/nstd51/nstd51.GRCh37.variant_call.vcf.gz -o nstd51.GRCh37.SV.prc.txt -d USER
+
+python processCLINVAR.py -i /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh37/nstd102/nstd102.GRCh37.variant_call.vcf.gz -o nstd102.GRCh37.SV.prc.txt -d CLINVAR
+
+cat /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh37/nstd45/nstd45.GRCh37.SV.prc.txt /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh37/nstd51/nstd51.GRCh37.SV.prc.txt /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh37/nstd102/nstd102.GRCh37.SV.prc.txtd102.GRCh37.SV.prc.txt
+
+############################################
+
+20190616 - update
+
+The current script processDB.py and class file DB/DB.py has been developed to process following databases: GNOMAD, NGC -37/38 cohort, DECIPHER, Ensembl-Exons+/-8bp level.
+
+1. python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20190412/manifest/manifest.txt -d DECIPHER -r GRCh37 -a CONFIG/Analysis.xml -l 0
+2. python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20190412/manifest/manifest.txt -d DECIPHER -r GRCh38 -a CONFIG/Analysis.xml -l 0
+3. python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20190412/manifest/manifest.txt -d gnomad -r GRCh37 -a CONFIG/Analysis.xml -l 0
+4. python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20190412/manifest/manifest.txt -d gnomad -r GRCh38 -a CONFIG/Analysis.xml -l 0
+5. python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20190529/manifest/manifest.txt -d ngc -r GRCh38 -a CONFIG/Analysis.xml -l 0 #NGC called on v38
+6. python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20190412/manifest/manifest.txt -d NGC -r GRCh37 -a CONFIG/Analysis.xml -l 0 #NGC sample called on v37
+7. python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20190412/manifest/manifest.txt -d NGC -r GRCh37 -a CONFIG/Analysis.xml -l 1 #NGC samples called on v37 and lift over (LOV) to v38
+8. python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20190412/manifest/manifest.txt -d Ensembl -r GRCh37 -a CONFIG/Analysis.xml -l 0
+9. python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20190412/manifest/manifest.txt -d Ensembl -r GRCh38 -a CONFIG/Analysis.xml -l 0
+10. python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20190412/manifest/manifest.txt -d dbvar -r GRCh37 -a CONFIG/Analysis.xml -l 0
+11. python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20190412/manifest/manifest.txt -d dbvar -r GRCh38 -a CONFIG/Analysis.xml -l 0
+
+########################
+
+Example usage:
+Stage-1
+Dependencies:
+  -- Install vcf_parser module from github: https://github.com/moonso/vcf_parser
+
+python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20190913/manifest/manifest.txt -d ngc -r GRCh38 -a CONFIG/Analysis.xml -l 0 -p 20190913
+
+  -- This will generate output in resources/NGC_V1/GRCh38/<manifest-date-string>
+
+Stage-2:
+
+python processSV.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20190614/manifest/manifest.txt -a CONFIG/Analysis.xml -p 20190917 -e vcfanno -w /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/misc/TEST_SV -f ./NGC_famID_v37_v38.txt -r v38
+
+
+######### Command update: ProcessDB.py for Ensembl;RefSeq  #####################
+python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20190412/manifest/manifest.txt -d Ensembl -r GRCh38 -a CONFIG/Analysis.xml -l 0 -p 20181213
+
+python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20190412/manifest/manifest.txt -d Ensembl -r GRCh37 -a CONFIG/Analysis.xml -l 0 -p 20181213
+
+python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20191002/manifest/manifest.txt -d refseq -r GRCh38 -a CONFIG/Analysis.xml -l 0 -p 20191210
+
+python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20191002/manifest/manifest.txt -d refseq -r GRCh37 -a CONFIG/Analysis.xml -l 0 -p 20191210
+
+###########################################################
+
+Running Sv pipeline for release: 20200114 (dir:us/release/20200114)
+
+Stage-1: Create and update NGC databases
+
+python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20200114/manifest/manifest.txt -d ngc -r GRCh38 -a CONFIG/Analysis.xml -l 0 -p 20200114
+
+Stage-2: Launch vcfanno-SV pipeline
+
+python processSV.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20200114/manifest/manifest.txt -a CONFIG/Analysis.xml -p 20200120 -e vcfanno -w /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/misc/TEST_SV -f /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20200114/manifest/include_famIDs_complete_new.txt -r v38
+
+##########################################################
+Running SV pipeline for release: 20200205 (dir:us/release/20200205)
+
+Stage-1: Create and update NGC database
+
+python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20200205/manifest/manifest.txt -d ngc -r GRCh38 -a CONFIG/Analysis.xml -l 0 -p 20200205
+
+Stage-2: Launch vcfanno-SV pipeline
+
+python processSV.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20200205/manifest/manifest.txt -a CONFIG/Analysis.xml -p 20200205 -e vcfanno -w /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/misc/TEST_SV -f ./NGC_fam_20200203-05.txt -r v38
+
+##########################################################
+20200215: Running SV pipeline on full cohort
+	  -- Includes manifest till release 20200211
+	  -- Created new Ensembl, Refseq annotation with offset 0 respectively for these annotation sources.
+	  -- Config/Analysis.xml: Offset changed; Path changed respectively for Ensembl, Refseq
+
+Update database for Ensembl,Refseq
+                    **** GRCh38 *****
+python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20200211/manifest/manifest.txt -d Ensembl -r GRCh38 -a CONFIG/Analysis.xml -l 0 -p 20200215
+
+python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20200211/manifest/manifest.txt -d refseq -r GRCh38 -a CONFIG/Analysis.xml -l 0 -p 20200215
+		    **** GRCh38 *****
+		    
+		    **** GRCh37 *****
+python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20200211/manifest/manifest.txt -d Ensembl -r GRCh37 -a CONFIG/Analysis.xml -l 0 -p 20200215
+
+python processDB.py -m /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/release/20200211/manifest/manifest.txt -d refseq -r GRCh37 -a CONFIG/Analysis.xml -l 0 -p 20200215
+		    **** GRCh37 *****
+
+
+****** Running SV pipeline ***********
+
