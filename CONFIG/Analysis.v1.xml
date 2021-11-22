@@ -4,8 +4,8 @@
 	<version>V1</version>
  	<general>
 		<author>aak@ebi.ac.uk</author>
-	  	<date>02-04-2018</date> <!-- DD-MM-YY -->
-		<resourceDir>/home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/misc/TEST_SV/demo/resources</resourceDir>
+	  	<date>21-11-2021</date> <!-- DD-MM-YY -->
+		<resourceDir>/hps/research1/dunham/resources/</resourceDir>
 		<genomeBuild>grch37</genomeBuild>
 		<extName>.0based.</extName>
 		<task></task> <!-- Possible values: annotation/vcfanno/annotsv -->
@@ -51,7 +51,7 @@
 	  </annotsv>
 
 	  <vcfanno>
-		  <binaries>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/binaries/vcfanno/vcfanno</binaries>
+		  <binaries>vcfanno</binaries>
 		  <lua></lua>
 		  <toml37>vcfanno_bed.conf.37.toml</toml37>
 		  <toml38>vcfanno_bed.conf.38.toml</toml38>
@@ -89,7 +89,7 @@
 	  </gnomad>
 	  
 	  <ngc>
-		  <lovbin>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/scripts/software/UCSCtools/liftOver</lovbin>
+		  <lovbin>liftOver</lovbin>
 		  <lovchain>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/genomes/GRCh37_to_GRCh38.chain.gz</lovchain>
 		  <grch37>
 			  <annoFile>ngc/grch37/NGC.samples.0based.grch37.sorted.bed.gz</annoFile>
@@ -105,35 +105,35 @@
 	
 	  <ens_trans>
 		  <grch37>
-			  <annoFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh37/release-98/ensembl_grch37.transcript.1000.sorted.bed.gz</annoFile>
+			  <annoFile>ensembl/grch37/release-98/ensembl_grch37.transcript.1000.sorted.bed.gz</annoFile>
 		  </grch37>
 		  <grch38>
-			  <annoFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/release-98/ensembl_grch38.transcript.1000.sorted.bed.gz</annoFile>
+			  <annoFile>ensembl/grch38/release-98/ensembl_grch38.transcript.1000.sorted.bed.gz</annoFile>
 		  </grch38>
 	  </ens_trans>
 	  <ens_exon>
 		  <grch37>
-			  <annoFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh37/release-98/ensembl_grch37.exons.50.sorted.bed.gz</annoFile>
+			  <annoFile>ensembl/grch37/release-98/ensembl_grch37.exons.50.sorted.bed.gz</annoFile>
 		  </grch37>
 		  <grch38>
-			  <annoFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/release-98/ensembl_grch38.exons.50.sorted.bed.gz</annoFile>
+			  <annoFile>ensembl/grch37/release-98/ensembl_grch38.exons.50.sorted.bed.gz</annoFile>
 		  </grch38>
 	  </ens_exon>
 	  <ref_gene>
 		<grch37>
-			<annoFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/RefSeq/GRCh37/r105_20190906/refseq_grch37.gene.1000.sorted.bed.gz</annoFile>
+			<annoFile>refseq/grch37/20201026/refseq_grch37.gene.1000.sorted.bed.gz</annoFile>
   		</grch37>
 		<grch38>
-			<annoFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/RefSeq/GRCh38/r109_20190905/refseq_grch38.gene.1000.sorted.bed.gz</annoFile>
+			<annoFile>refseq/grch38/20210518/refseq_grch38.gene.1000.sorted.bed.gz</annoFile>
 		</grch38>
 	  </ref_gene>
 
 	  <ref_exon>
 		  <grch37>
-			  <annoFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/RefSeq/GRCh37/r105_20190906/refseq_grch37.exons.50.sorted.bed.gz</annoFile>
+			  <annoFile>refseq/grch37/20201026/refseq_grch37.exons.50.sorted.bed.gz</annoFile>
 		  </grch37>
 		  <grch38>
-			  <annoFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/RefSeq/GRCh38/r109_20190905/refseq_grch38.exons.50.sorted.bed.gz</annoFile>
+			  <annoFile>refseq/grch38/20210518/refseq_grch38.exons.50.sorted.bed.gz</annoFile>
 		  </grch38>
 	  </ref_exon>
 	  
@@ -191,9 +191,9 @@
   	</annoDB>
 		
 	<ensembl>
-		<grch37>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh37/release-98/Homo_sapiens.GRCh37.87.gtf.gz</grch37>
+		<grch37>ensembl/GRCh37/release-98/Homo_sapiens.GRCh37.87.gtf.gz</grch37>
 	  <!-- <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/Homo_sapiens.GRCh38.96.gtf.gz</grch38> -->
-	  	<grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/release-98/Homo_sapiens.GRCh38.98.gtf.gz</grch38>
+	  	<grch38>ensembl/GRCh38/release-98/Homo_sapiens.GRCh38.98.gtf.gz</grch38>
 		  <!-- <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/release-100/Homo_sapiens.GRCh38.100.gtf.gz</grch38> -->
 	  	<ensVarAnnot>
 		  <ensCoordBin>extractCoord4Ensembl.py</ensCoordBin>
@@ -221,8 +221,8 @@
   	</ensembl>
 
   	<refseq>
-	  	<grch37>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/RefSeq/GRCh37/r105_20190906/GRCh37_latest_genomic.chr.gtf.gz</grch37>
-	  	<grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/RefSeq/GRCh38/r109_20190905/GRCh38_latest_genomic.chr.gtf.gz</grch38>
+	  	<grch37>refseq/grch37/20201026/GRCh37_latest_genomic.chr.gtf.gz</grch37>
+		<grch38>refseq/grch38/20210518/GRCh38_latest_genomic.chr.gtf.gz</grch38>
 	  	<refType>
 		  	<offset> 
 				<gene>1000</gene> 

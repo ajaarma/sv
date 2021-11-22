@@ -317,6 +317,37 @@ class CONFIG:
 
         return cmd_dict
 
+    def parseRefseqArgs(self):
+        ''' Method to process command line arguments for formatting Refseq file 
+        '''
+        parser = argparse.ArgumentParser(
+                 description = 'python convertRefseqAccession.py -i <refseq-file> \n' 
+                               '-r <assembly-report-file>'
+                               '-o <out-file>'
+                 )
+        parser.add_argument('-i','--inpFile',help='Input Refseq file',
+                            action='store',dest='inpFile',required=True)
+        parser.add_argument('-o','--outFile',help='Output Formatted file',
+                            action='store',dest='outFile',required=True)
+        parser.add_argument('-r','--report',help='Assembly Report File',action='store',
+                            dest='report',required=True)
+
+        self.results = parser.parse_args()
+        self.inp_file = os.path.abspath(self.results.inpFile)
+        self.out_file = os.path.abspath(self.results.outFile)
+        self.report_file = self.results.report
+
+        cmd_dict = {'inp':self.inp_file,'out':self.out_file,
+                    'report':self.report_file}
+
+        print "\n\n"
+        print 'Entered input file is: ',self.inp_file
+        print 'Entered out file is: ',self.out_file
+        print 'Entered report file is: ',self.report_file
+        print "\n\n"
+
+        return cmd_dict
+
 
     def processInit(self,work_dir,cmd_args, proj_date):
 

@@ -6,7 +6,7 @@
 #                                                       #
 #########################################################
 
-import re,os,gzip,sys
+import re,os,gzip,sys,time
 from collections import OrderedDict
 from vcf_parser import VCFParser
 
@@ -322,7 +322,7 @@ class dbSV:
         elif db_type =="refseq":
 
             dbDict = configDict[db_type]
-            refseq_file = dbDict[ref_genome]
+            refseq_file = '/'.join([resource_path,dbDict[ref_genome]])
 
             print " -- Entered Refseq raw file is: ",refseq_file,"\n"
             out_dir = os.path.dirname(refseq_file)
@@ -332,9 +332,13 @@ class dbSV:
             for ref_type in refseq_type_list:
                 
                 if re.search('gene',ref_type):
-                    ref_out_file = configDict['ref_gene'][ref_genome]['annoFile']
+                    ref_out_file = '/'.join([resource_path,
+                                             configDict['ref_gene'][ref_genome]['annoFile']
+                                            ])
                 elif re.search('exons',ref_type):
-                    ref_out_file  = configDict['ref_exon'][ref_genome]['annoFile']
+                    ref_out_file  = '/'.join([resource_path,
+                                              configDict['ref_exon'][ref_genome]['annoFile']
+                                             ])
 
                 tmp_out_file = '/'.join([out_dir,'tmp.'+ref_type+'.bed'])
                 offset = configDict['refseq']['refType']['offset'][ref_type]
@@ -514,9 +518,11 @@ class dbSV:
         tmp_merge_file = '/'.join([os.path.dirname(tmp_file),'tmp.merge.bed'])
         wh = open(tmp_merge_file,'w')
         self.mergeDupCoordBed(tmp_file,wh,db_type)
-        
+        wh.close()
+
         print 'sort -k1,1V -k2,2n -k3,3n '+tmp_merge_file+' |bgzip -c > '+sort_file
         os.system('sort -k1,1V -k2,2n -k3,3n '+tmp_merge_file+' |bgzip -c > '+sort_file)
+        time.sleep(5.5)
         os.system('tabix -p bed '+sort_file)
         #os.system('rm '+tmp_merge_file)
         #os.system('rm '+tmp_file)
@@ -534,6 +540,9 @@ class dbSV:
             strs = [str(x) for x in strs]
             key_id = strs[0]+"+"+strs[1]+"+"+strs[2]
             val_id = strs[3]
+            if strs[0]=='chr17_ctg5':
+                print lines
+                sys.exit()
 
             if bed_hash.has_key(key_id):
                 tmp = bed_hash[key_id]
@@ -542,6 +551,7 @@ class dbSV:
                 tmp = []
             else:
                 bed_hash[key_id] = [val_id]
+
         fh.close()
 
         for keys in bed_hash:
