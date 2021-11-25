@@ -36,11 +36,11 @@
 
 	  
 	  <annotsv> 
-		<binaries>/rds/project/who1000/rds-who1000-wgs10k/user/as2635/open/software/AnnotSV/latest/bin/AnnotSV</binaries>
+		<binaries>AnnotSV</binaries>
 		<SVinputFile>%inputFile%</SVinputFile>
 		<genomeBuild>GRCh38</genomeBuild>
 		<!-- <bedtools>/home/aak64/rds/hpc-work/BINARIES/bedtools2/bin/bedtools</bedtools> -->
-		<bedtools>/rds/project/who1000-1/rds-who1000-cbrc/user/cbrcmod/modules/out/modulebin/bedtools/2.26.0/bin/bedtools</bedtools>
+		<bedtools>bedtools</bedtools>
 		<SVinputInfo>1</SVinputInfo>
 		<outputDir>%outDir%</outputDir>
 		<outputFile>%outDir%</outputFile>
@@ -90,7 +90,7 @@
 	  
 	  <ngc>
 		  <lovbin>liftOver</lovbin>
-		  <lovchain>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/genomes/GRCh37_to_GRCh38.chain.gz</lovchain>
+		  <lovchain>genomes/GRCh37_to_GRCh38.chain.gz</lovchain>
 		  <grch37>
 			  <annoFile>ngc/grch37/NGC.samples.0based.grch37.sorted.bed.gz</annoFile>
 		  </grch37>
@@ -139,37 +139,36 @@
 	  
 	  <dbvar>
 		  <grch37>
-			 <clingen>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh37/nstd45/nstd45.GRCh37.variant_call.vcf.gz</clingen>
-	                 <user>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh37/nstd51/nstd51.GRCh37.variant_call.vcf.gz</user>
-	                 <clinvar>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh37/nstd102/nstd102.GRCh37.variant_call.vcf.gz</clinvar>
-		  	 <annoFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh37/dbvar_grch37.0based.CG.UR.CV.sorted.bed.gz</annoFile>
-		</grch37>
-		<grch38>
-			<clingen>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh38/nstd45/nstd45.GRCh38.variant_call.vcf.gz</clingen>
-			<user>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh38/nstd51/nstd51.GRCh38.variant_call.vcf.gz</user>
-			<clinvar>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh38/nstd102/nstd102.GRCh38.variant_call.vcf.gz</clinvar>
-			<annoFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/CLINVAR/GRCh38/dbvar_grch38.0based.CG.UR.CV.sorted.bed.gz</annoFile>
+			 <clingen>clinvar/grch37/nstd45/nstd45.GRCh37.variant_call.vcf.gz</clingen>
+	                 <user>clinvar/grch37/nstd51/nstd51.GRCh37.variant_call.vcf.gz</user>
+	                 <clinvar>clinvar/grch37/nstd102/nstd102.GRCh37.variant_call.vcf.gz</clinvar>
+		  	 <annoFile>clinvar/grch37/dbvar_grch37.0based.CG.UR.CV.sorted.bed.gz</annoFile>
+		 </grch37>
+		 <grch38>
+			<user>clinvar/grch38/nstd51/nstd51.GRCh38.variant_call.vcf.gz</user>
+			<clinvar>clinvar/grch38/nstd102/nstd102.GRCh38.variant_call.vcf.gz</clinvar>
+			<annoFile>clinvar/grch38/dbvar_grch38.0based.CG.UR.CV.sorted.bed.gz</annoFile>
 		</grch38>
 	  </dbvar>
 	  <decipher>
 		<grch37>
-			<rawFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/DECIPHER/GRCh37/DECIPHER_CNV_syndromes_20190603.bed</rawFile>
-			<annoFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/DECIPHER/GRCh37/decipher.grch37.0based.sorted.bed.gz</annoFile>
+			<rawFile>decipher/grch37/DECIPHER_CNV_syndromes_20190603.bed</rawFile>
+			<annoFile>decipher/grch37/decipher.grch37.0based.sorted.bed.gz</annoFile>
 		</grch37>
 		<grch38>
-			<rawFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/DECIPHER/GRCh38/DECIPHER_CNV_syndromes_20190603.liftover38.bed</rawFile>
-		  	<annoFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/DECIPHER/GRCh38/decipher.grch38.0based.sorted.bed.gz</annoFile>
+			<rawFile>decipher/grch38/DECIPHER_CNV_syndromes_20190603.liftover38.bed</rawFile>
+		  	<annoFile>decipher/grch38/decipher.grch38.0based.sorted.bed.gz</annoFile>
 		</grch38>
 	</decipher>
 
 	<user>
 		<grch37>
-			<rawFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/user/promoter/grch37/Homo_sapiens.GRCh37.87.gtf.gz</rawFile>
-			<annoFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/user/promoter/grch37/user_grch37.0based.promoter.sorted.merged.bed.gz</annoFile>
+			<rawFile>user/promoter/grch37/Homo_sapiens.GRCh37.87.gtf.gz</rawFile>
+			<annoFile>user/promoter/grch37/user_grch37.0based.promoter.sorted.merged.bed.gz</annoFile>
 		</grch37>
 		<grch38>
-			<rawFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/user/promoter/grch38/Homo_sapiens.GRCh38.100.gtf.gz</rawFile>
-			<annoFile>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/user/promoter/grch38/user_grch38.0based.promoter.sorted.merged.bed.gz</annoFile>
+			<rawFile>user/promoter/grch38/Homo_sapiens.GRCh38.100.gtf.gz</rawFile>
+			<annoFile>user/promoter/grch38/user_grch38.0based.promoter.sorted.merged.bed.gz</annoFile>
 		</grch38>
 		<tag>promoter</tag>
 	</user>
@@ -244,15 +243,15 @@
   	</overlapMerge>
 
   	<par>
-	 	<grch37>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/regions/PAR/hg19_PAR.txt</grch37>
-	  	<grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/regions/PAR/hg38_PAR.txt</grch38>
+	 	<grch37>regions/PAR/hg19_PAR.txt</grch37>
+	  	<grch38>regions/PAR/hg38_PAR.txt</grch38>
   	</par>
   	<formatGT>
 		<flag>True</flag>
 		<scripts>formatGT.py</scripts>
 	</formatGT>
 
-	<imprint>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/genelist/imprinted_genes_CNV_20200424.txt</imprint>
+	<imprint>genelist/imprinted_genes_CNV_20200424.txt</imprint>
   
   	<famFilter>
 	  	<famBin>familyFiltering.R</famBin>
