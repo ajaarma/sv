@@ -287,27 +287,28 @@ class dbSV:
         elif db_type =="ensembl":
 
             dbDict = configDict[db_type]
-            ensg_file = dbDict[ref_genome]
+            ensg_file = '/'.join([resource_path,dbDict[ref_genome]])
 
             print " -- Entered Ensembl file is: ",ensg_file,"\n"
             out_dir = os.path.dirname(ensg_file)
 
             
             ensembl_type_list = configDict['ensembl']['ensType']['offset'].keys()
+            print ensembl_type_list
 
             for ens_type in ensembl_type_list:
                 
                 if re.search('transcript',ens_type):
-                    ens_out_file = configDict['ens_trans'][ref_genome]['annoFile']
+                    ens_out_file = '/'.join([resource_path,
+                                             configDict['ens_trans'][ref_genome]['annoFile']
+                                            ])
                 elif re.search('exons',ens_type):
-                    ens_out_file  = configDict['ens_exon'][ref_genome]['annoFile']
+                    ens_out_file  = '/'.join([resource_path,
+                                              configDict['ens_exon'][ref_genome]['annoFile']
+                                             ])
 
                 offset = configDict['ensembl']['ensType']['offset'][ens_type]
                 tmp_out_file = '/'.join([out_dir,'tmp.'+ens_type+'.bed'])
-                #out_file = out_dir+"/"+db_type+"_"+ref_genome+extName+ens_type+\
-                #                                        '.'+str(offset)+".bed"
-                #out_sorted_merged_gz = out_dir+"/"+db_type+"_"+ref_genome+extName+ens_type+\
-                #                            '.'+str(offset)+".sorted.merged.bed.gz"
 
                 print " -- Processing the Raw Ensembl file: ",ensg_file
                 wh = open(tmp_out_file,"w")

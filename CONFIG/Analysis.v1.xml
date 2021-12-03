@@ -116,7 +116,7 @@
 			  <annoFile>ensembl/grch37/release-98/ensembl_grch37.exons.50.sorted.bed.gz</annoFile>
 		  </grch37>
 		  <grch38>
-			  <annoFile>ensembl/grch37/release-98/ensembl_grch38.exons.50.sorted.bed.gz</annoFile>
+			  <annoFile>ensembl/grch38/release-98/ensembl_grch38.exons.50.sorted.bed.gz</annoFile>
 		  </grch38>
 	  </ens_exon>
 	  <ref_gene>
@@ -190,9 +190,9 @@
   	</annoDB>
 		
 	<ensembl>
-		<grch37>ensembl/GRCh37/release-98/Homo_sapiens.GRCh37.87.gtf.gz</grch37>
+		<grch37>ensembl/grch37/release-98/Homo_sapiens.GRCh37.87.gtf.gz</grch37>
 	  <!-- <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/Homo_sapiens.GRCh38.96.gtf.gz</grch38> -->
-	  	<grch38>ensembl/GRCh38/release-98/Homo_sapiens.GRCh38.98.gtf.gz</grch38>
+	  	<grch38>ensembl/grch38/release-98/Homo_sapiens.GRCh38.98.gtf.gz</grch38>
 		  <!-- <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/release-100/Homo_sapiens.GRCh38.100.gtf.gz</grch38> -->
 	  	<ensVarAnnot>
 		  <ensCoordBin>extractCoord4Ensembl.py</ensCoordBin>
