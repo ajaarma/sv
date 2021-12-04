@@ -50,8 +50,18 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 	1	100	200	SV_ID_1
 	1	105	500	SV_ID_2 
 
-	* The pipeline requires following annotation sources:
-		1. gnomad SVs
-		2. 
+	* The pipeline requires following annotation sources categorised as:
+		1. Population databases:
+			1.1. gnomad SVs
+			1.2. NGC samples (internal cohort)	
+		2. Gene information:
+			2.1. Ensembl: Promoter, Transcript, Exons
+			2.2. Refseq: Gene, Exons 
+		3. Pathogenecity
+			3.1. Decipher
+			3.2. dbVar: Clingen(nstd45),User(nstd51),Clinvar(nstd102)
+		4. Others:
+			4.1. Blacklist regions
+	* 
 
 					
