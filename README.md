@@ -31,12 +31,12 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 	$ conda install vcftools=0.1.14
 	$ conda install bcftools=1.9
 	$ conda install gcc #(OSX)
-        $ conda install gcc_linux-64 #(Linux)
-        $ conda install parallel
-        $ conda install -c r r-optparse
-        $ conda install -c r r-dplyr
-        $ conda install -c r r-plyr
-        $ conda install -c r r-data.table
+	$ conda install gcc_linux-64 #(Linux)
+	$ conda install parallel
+	$ conda install -c r r-optparse
+	$ conda install -c r r-dplyr
+	$ conda install -c r r-plyr
+	$ conda install -c r r-data.table
 	$ conda install -c bioconda ucsc-liftover
 	$ conda install -c bioconda vcfanno
 
