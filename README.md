@@ -64,6 +64,20 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 			3.2. dbVar: Clingen(nstd45),User(nstd51),Clinvar(nstd102)
 		4. Others:
 			4.1. Blacklist regions
-	*  
+	
+	* Processing annotation sources: All of the above annotation sources can be processed using following command:
+		$ python processDB.py -a <user-config-xml-file>
+				      -d <database-name>
+				      -r <ref-genome-version>
+				      -l <lift-over-flag>
+				      -m <manifest-file-internal-cohort>
+				      -p <project-name>
+	* Processing gnomad SVs
+		Example command to process gnomad SVs (grch37 version):
+		- Download the gnomad SVs (bed format) from here: https://storage.googleapis.com/gcp-public-data--gnomad/papers/2019-sv/gnomad_v2.1_sv.sites.bed.gz 
+		- Place in <resource-dir>gnomad/grch37/ directory 
+		- Run the command:
+		$ python processDB.py -a CONFIG/Analysis_user.grch37.xml -d gnomad -r grch37 -l F -m NA -p NA
+	 
 
 					
