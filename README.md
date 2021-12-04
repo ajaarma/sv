@@ -46,8 +46,8 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 
 ##### Building up of Annotation sources ############
 	* Annotation of SVs in this pipeline is done by vcfanno tool[Reference]. 
-	This requires annotation sources to be processed in specific tab separated format. 
-	The format is defined as:
+	  This requires annotation sources to be processed in specific tab separated format. 
+	  The format is defined as:
 		#Chrom	#Start-Pos	#End Position	#SV-IDs,Other information
 		1	100	200	SV_ID_1
 		1	105	500	SV_ID_2 
@@ -64,6 +64,6 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 			3.2. dbVar: Clingen(nstd45),User(nstd51),Clinvar(nstd102)
 		4. Others:
 			4.1. Blacklist regions
-	* 
+	*  
 
 					
