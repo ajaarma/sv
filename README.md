@@ -70,14 +70,83 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 				      -d <database-name>
 				      -r <ref-genome-version>
 				      -l <lift-over-flag>
-				      -m <manifest-file-internal-cohort>
+				      -m <manifest-file-internal-cohort-NGC>
 				      -p <project-name>
 	* Processing gnomad SVs
 		Example command to process gnomad SVs (grch37 version):
 		- Download the gnomad SVs (bed format) from here: https://storage.googleapis.com/gcp-public-data--gnomad/papers/2019-sv/gnomad_v2.1_sv.sites.bed.gz 
-		- Place in <resource-dir>gnomad/grch37/ directory 
+		- Place in <resource-path>gnomad/grch37/ directory. 
 		- Run the command:
-		$ python processDB.py -a CONFIG/Analysis_user.grch37.xml -d gnomad -r grch37 -l F -m NA -p NA
+		$ python processDB.py -a CONFIG/Analysis_user.grch37.xml -d gnomad 
+				      -r grch37 -l False -m NA -p NA
+		Choose liftover flag to True for lifting over to GRCh38.
+		$ python processDB.py -a CONFIG/Analysis_user.grch37.xml -d gnomad 
+				      -r grch37 -l False -m NA -p NA
+
+	* Processing NGC samples (Internal Cohort)
+		- The sample vcfs have not been provided with this repo. But can be replicated for any other  internal cohort.
+		- The samples should be spcified as in example manifest file: 
+			<resource-path>/examples/manifest.txt
+		- Example command:
+		$ python processDB.py -a CONFIG/Analysis_user.grch37.xml -d ngc
+				      -r grch37 -l false -m <resource-path>/examples/manifest.txt
+				      -p 20211203
+	
+	* Processing Ensembl
+		- Download Ensembl gene information file from: http://ftp.ensembl.org/pub/grch37/release-98/gtf/homo_sapiens/Homo_sapiens.GRCh37.87.gtf.gz
+		- Example command:
+		$ python processDB.py -a CONFIG/Analysis.v1.xml -r grch37 -d ensembl 
+				      -l false -m NA -p NA
+	* Processing RefSeq
+		- Standardizing the raw Refseq gene file by mapping the GenBank-Accn to Chromosome number 
+		- Download RefSeq gene information files 
+		(1) Genomic : https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh37_latest/refseq_identifiers/GRCh37_latest_genomic.gtf.gz
+		(2) Assembly report: https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh37_latest/refseq_identifiers/GRCh37_latest_assembly_report.txt
+		- Put these files in following directory:
+			<resource-path>/refseq/grch37/
+		- Run this command for standardization:
+		$ python convertRefSeqAccession.py 
+			-i <resource-path>/refseq/grch37/GRCh37_latest_genomic.gtf.gz 
+			-a <resource-path>/refseq/grch37/GRCh37_latest_assembly_report.txt
+		- Example command to create the database:
+		$ python processDB.py -a CONFIG/Analysis_user.grch37.xml -d refseq
+				      -l false -m NA -p NA
+
+	* Processing Decipher
+		- Download the file: https://www.deciphergenomics.org/files/downloads/population_cnv_grch37.txt.gz
+		- Put it in following directory: <resource-dir>/decipher/grch37/
+		- Run the command:
+		$ python processDB.py -a CONFIG/Analysis_user.grch37.xml -d decipher
+				      -l false -m NA -p NA
+	 
+	* Processing dbVar
+		- Download these files:
+		 	(1) Clingen (nstd45):https://ftp.ncbi.nlm.nih.gov/pub/dbVar/data/Homo_sapiens/by_study/vcf/nstd45.GRCh37.variant_call.vcf.gz
+			(2) User curated (nstd51): https://ftp.ncbi.nlm.nih.gov/pub/dbVar/data/Homo_sapiens/by_study/vcf/nstd51.GRCh37.variant_call.vcf.gz
+			(3) Clinvar (nstd102): https://ftp.ncbi.nlm.nih.gov/pub/dbVar/data/Homo_sapiens/by_study/vcf/nstd102.GRCh37.variant_call.vcf.gz
+		- Put these files in: <resource-path>/dbvar/grch37/
+		- Example run of the command
+		$ python processDB.py -a CONFIG/Analysis_user.grch37.xml -d dbvar
+				      -l false -m NA -p NA
+	
+	* Processing User specific
+		- Promoter regions (Ensembl)
+		- Download: http://ftp.ensembl.org/pub/grch37/release-98/gtf/homo_sapiens/Homo_sapiens.GRCh37.87.gtf.gz
+		- Put it here: <resource-path>/user/promoter/grch37/
+		- Example command:
+		$ python processDB.py -a CONFIG/Analysis_user.grch37.xml -d user_promoter
+				      -l false -m NA -p NA
+	
+		
+		- Blacklist regions
+		- Download: https://github.com/Boyle-Lab/Blacklist/blob/master/lists/Blacklist_v1/hg38-blacklist.bed.gz
+		- Put it here: <resource-path>/user/blacklist/grch37/
+		- Example command:
+		$ python processDB.py -a CONFIG/Analysis_user.grch37.xml -d user_blacklist
+				      -l false -m NA -p NA
+	 
+	
+	
 	 
 
 					
