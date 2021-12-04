@@ -175,11 +175,22 @@ class dbSV:
         if db_type=="dbvar":
             
             dbDict = configDict[db_type]
-            clingen_file = dbDict[ref_genome]['clingen']
-            user_file = dbDict[ref_genome]['user']
-            clinvar_file = dbDict[ref_genome]['clinvar']
+            resource_path = os.path.abspath(
+                                configDict['general']['resourceDir']
+                            )
+            clingen_file = '/'.join([resource_path,
+                                     dbDict[ref_genome]['clingen']
+                                    ])
+            user_file = '/'.join([resource_path,
+                                  dbDict[ref_genome]['user']
+                                 ])
+            clinvar_file = '/'.join([resource_path,
+                                     dbDict[ref_genome]['clinvar']
+                                    ])
            
-            cv_out_file = dbDict[ref_genome]['annoFile']
+            cv_out_file = '/'.join([resource_path,
+                                   dbDict[ref_genome]['annoFile']
+                                    ])
             
             print " --Entered CLINGEN file :",clingen_file,"\n"
             print " --Entered User curated file :",user_file,"\n"
@@ -203,31 +214,21 @@ class dbSV:
             self.getCoordSorted(tmp_out_file,cv_out_file,db_type)
             
             print "-- Finished processing: ",db_type+"\n"
-            #os.system("sort -k1,1n -k2n "+out_file+" > "+out_sorted_file)
 
         elif db_type =="ngc":
         
             # family overlap flag (boolean). If TRUE then don't include CIPOS and CIEND for 
             # adjusting start and end coordinates of input SV.
             
-            print manifest_file,db_type,ref_genome
             print "Processing database: ",db_type
             dbDict = configDict[db_type]
-            print dbDict
-            #gnomad_raw_file = '/'.join([resource_path,dbDict[ref_genome]['rawFile']])
-            #gnomad_out_file = '/'.join([resource_path,dbDict[ref_genome]['annoFile']])
             
             # Naming output directory and output SV coordinates for NGC database.
             if ref_genome=="grch37":
                 
                 ngc_out_file = '/'.join([resource_path,dbDict[ref_genome]['annoFile']])
                 ngc_basename = os.path.basename(ngc_out_file)
-                print ngc_out_file
-                print proj_date
                 ngc_dirname = '/'.join([os.path.dirname(ngc_out_file),proj_date])
-                #out_file = 'NGC.samples'+extName+'grch37.bed' #os.path.basename(configDict['ngc'][ref_genome])
-                #out_dir = os.path.dirname(configDict['ngc'][ref_genome])+"/"+proj_date
-                print ngc_dirname
                 os.system('mkdir -p '+ngc_dirname)
                 ngc_out_file = '/'.join([ngc_dirname,ngc_basename])
 
@@ -235,14 +236,10 @@ class dbSV:
                 ngc_out_file = '/'.join([resource_path,dbDict[ref_genome]['annoFile']])
                 ngc_basename = os.path.basename(ngc_out_file)
                 ngc_dirname = '/'.join([os.path.dirname(ngc_out_file),proj_date])
-                #out_file = 'NGC.samples'+extName+'grch37.bed' #os.path.basename(configDict['ngc'][ref_genome])
-                #out_dir = os.path.dirname(configDict['ngc'][ref_genome])+"/"+proj_date
-                print ngc_dirname
                 os.system('mkdir -p '+ngc_dirname)
                 ngc_out_file = '/'.join([ngc_dirname,ngc_basename])
 
             print " -- The SV coordinates for NGC samples will be written to: "+ngc_out_file
-            #sys.exit()
             tmp_out_file = '/'.join([os.path.dirname(ngc_out_file),'tmp.bed.gz'])
             
             # Processing the all the VCF files in the manifest to create NGC database
@@ -250,13 +247,10 @@ class dbSV:
             wh = self.processNGC(configDict,manifest_file,ngc_dirname,wh)
             wh.close()
 
-            #sys.exit()
             # Sorting and merging the SV coordinates
             print "\n"
             print " -- Sorting by chromosome and coordinates"
             self.getCoordSorted(tmp_out_file,ngc_out_file,db_type)
-
-            #os.system('rm '+out_file+';'+'rm '+outFile_sm_all)
 
             if int(lift_over_flag)==1:
                 print " -- Processing Liftover from GRCh37 to GRCh38"
@@ -270,11 +264,8 @@ class dbSV:
             gnomad_out_file = '/'.join([resource_path,dbDict[ref_genome]['annoFile']])
              
             print " -- Entered GNOMAD file is: ",gnomad_out_file,"\n"
-            #out_dir = os.path.dirname(gnomad_file)
-            #out_file = out_dir+"/"+db_type+"_"+ref_genome+extName+"AC.AN.AF.bed"
-            #out_sorted_gz = out_dir+"/"+db_type+"_"+ref_genome+extName+"AC.AN.AF.sorted.bed.gz"
             tmp_out_file = '/'.join([os.path.dirname(gnomad_out_file),'tmp.bed.gz'])
-            print tmp_out_file
+            
             print " -- Processing Raw GNOMAD File for selected fields/columns:",gnomad_raw_file
             wh = open(tmp_out_file,"w")
             wh = self.processGNOMAD(gnomad_raw_file,wh)
@@ -282,8 +273,12 @@ class dbSV:
             
             print " -- Sorting by chromosome and coordinates"
             self.getCoordSorted(tmp_out_file,gnomad_out_file,db_type)
-            print " -- Finished processing ",db_type,"\n"
-
+            
+            if int(lift_over_flag)==1:
+                print " -- Processing Liftover from GRCh37 to GRCh38"
+                self.getLiftOver_37to38(configDict,gnomad_out_file,db_type)
+            print " -- Finished processing "+db_type,"\n"
+ 
         elif db_type =="ensembl":
 
             dbDict = configDict[db_type]
@@ -294,7 +289,6 @@ class dbSV:
 
             
             ensembl_type_list = configDict['ensembl']['ensType']['offset'].keys()
-            print ensembl_type_list
 
             for ens_type in ensembl_type_list:
                 
@@ -360,14 +354,17 @@ class dbSV:
         elif db_type =="decipher":
 
             dbDict = configDict[db_type]
-            decp_raw_file = dbDict[ref_genome]['rawFile']
-            decp_anno_file = dbDict[ref_genome]['annoFile']
+            resource_path = configDict['general']['resourceDir']
+            decp_raw_file = '/'.join([resource_path,
+                                      dbDict[ref_genome]['rawFile']
+                                     ])
+            decp_anno_file = '/'.join([resource_path,
+                                       dbDict[ref_genome]['annoFile']
+                                      ])
             
             print " -- Entered Decipher file is: ",decp_anno_file,"\n"
             decp_out_dir = os.path.dirname(decp_anno_file)
             tmp_out_file = '/'.join([decp_out_dir,'tmp.decp.bed'])
-            #out_file = out_dir+"/"+db_type+"."+ref_genome+extName+"bed"
-            #out_sorted_gz = out_dir+"/"+db_type+"."+ref_genome+extName+"sorted.merged.bed.gz"
 
             print " -- Processing the Raw Decipher File: ",decp_raw_file
             wh = open(tmp_out_file,"w")
@@ -383,17 +380,20 @@ class dbSV:
 
             # Retrieve the configuration files for User sepcific annotation source
             dbDict = configDict[db_type]
-            user_file = dbDict[ref_genome]['rawFile']
-            user_out_file = dbDict[ref_genome]['annoFile']
+            resource_path = os.path.abspath(
+                                    configDict['general']['resourceDir']
+                                )
+            user_file = '/'.join([resource_path,
+                                  dbDict[ref_genome]['rawFile']
+                                 ])
+            user_out_file = '/'.join([resource_path,
+                                      dbDict[ref_genome]['annoFile']
+                                     ])
             db_tag = dbDict['tag']
 
             print " -- Entered User provided annotation file is: ",user_file,'\n'
             out_dir = os.path.dirname(user_file)
             tmp_out_file = '/'.join([out_dir,'tmp.bed'])
-            #out_file = out_dir+"/"+db_type+"_"+ref_genome+extName+db_tag+'.bed'
-            #out_sorted_gz = out_dir+"/"+db_type+"_"+ref_genome+'.'+extName+'.'+db_tag+'.'+\
-            #                                                        "sorted.merged.bed.gz"
-
 
             print " -- Processing the raw annotation file is: ",user_file,'\n'
             wh = open(tmp_out_file,'w')
@@ -415,7 +415,8 @@ class dbSV:
 
     def processUSER(self,user_file,wh):
         
-        ''' Subroutine to process the USER provided customized annotation source '''
+        ''' Subroutine to process the USER provided customized annotation
+        source: promoter regions '''
         
         if re.search('.gz',user_file):
             fh = gzip.open(user_file)
@@ -454,7 +455,10 @@ class dbSV:
 
     def processDECIPHER(self,inp_file,wh):
 
-        fh = open(inp_file)
+        if re.search('.gz',inp_file):
+            fh = gzip.open(inp_file)
+        else:
+            fh = open(inp_file)
 
         for lines in fh:
             lines = lines.strip()
@@ -483,21 +487,28 @@ class dbSV:
         
         return wh
 
-    def getLiftOver_37to38(self,configDict,inp_file,db_type,proj_date):
+    def getLiftOver_37to38(self,configDict,inp_file,db_type):
         ''' Subroutine to convert GRCh37 coordinates to GRCh38 '''
 
         #bgzip = 'bgzip' #os.path.abspath(configDict['general']['samtools'])+'/bgzip'
         #bcftools = 'bcftools' #os.path.abspath(configDict['general']['samtools'])+'/bcftools'
         #tabix = 'tabix' #os.path.abspath(configDict['general']['samtools'])+'/tabix'
-        resource_path = configDict['general']['resourceDir']
+        resource_path = os.path.abspath(configDict['general']['resourceDir'])
 
-        lovBin = configDict[db_type]['lovbin']
-        lovChain = configDict[db_type]['lovchain']
+        lovBin = configDict['lov']['lovbin']
+        lovChain = '/'.join([resource_path,configDict['lov']['lovchain']])
         extName = configDict['general']['extName']
-       
-        lov38out_file = '/'.join([resource_path,configDict['ngclov']['annoFile']])
-        lov38out_dir = os.path.dirname(lov38out_file)
-
+      
+        if db_type=='ngc':
+            lov38out_file = '/'.join([resource_path,configDict['ngclov']['annoFile']])
+            lov38out_dir = os.path.dirname(lov38out_file)
+        
+        elif db_type=='gnomad':
+            lov38out_file = '/'.join([resource_path,
+                                      configDict['gnomad']['grch38']['annoFile']
+                                     ])
+            lov38out_dir = os.path.dirname(lov38out_file)
+ 
         lov38_tmp_out_file = '/'.join([lov38out_dir,'lov.tmp.bed.gz'])
         lov38unmap_file    = '/'.join([lov38out_dir,'lov.tmp.unmap'])
         #lov38unmap_file = os.path.abspath(lov38out_file+".unmap")
@@ -687,9 +698,9 @@ class dbSV:
                 en_pos = strs[2]
                 gnomad_id = strs[3]
                 sv_type = strs[4]
-                ac = re.split("\,",strs[29]);ac = "/".join(ac)
-                an = re.split("\,",strs[28]);an = "/".join(an)
-                af = re.split("\,",strs[30]);
+                ac = re.split("\,",strs[36]);ac = "/".join(ac)
+                an = re.split("\,",strs[35]);an = "/".join(an)
+                af = re.split("\,",strs[37]);
                 af = [str(round(float(x),6)) for x in af]; af = "/".join(af)
                 
                 try:
@@ -987,6 +998,10 @@ class dbSV:
 
 
     def processDBVar(self,inp_file,wh,db_file_name):
+
+        ''' Subroutine to process DBVar Vcf files: selected studies: 
+            nstd45,nstd51,nstd102
+        '''
 
         print " -- Processing the database: ",db_file_name
         my_parser = VCFParser(infile=inp_file,split_variants=True,check_info=True)

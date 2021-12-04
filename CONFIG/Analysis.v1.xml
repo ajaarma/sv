@@ -10,7 +10,7 @@
 		<extName>.0based.</extName>
 		<task></task> <!-- Possible values: annotation/vcfanno/annotsv -->
 		<cluster>slurm</cluster>
-		<repos>/home/aak64/rds/hpc-work/REPOS/ngc_sv37</repos>
+		<repos>.</repos>
 	</general>
 	  
 	  <slurm>
@@ -79,18 +79,23 @@
 	  
 	  <gnomad>
 		  <grch37>
-		  	<rawFile>gnomad/grch37/gnomad_v2_sv.sites.sorted.bed.gz</rawFile>
-			<annoFile>gnomad/grch37/gnomad_grch37.0based.AC.AN.AF.sorted.bed.gz</annoFile>
+			  <rawFile>gnomad/grch37/sv/gnomad_v2.1_sv.sites.bed.gz</rawFile>
+			  <annoFile>gnomad/grch37/sv/gnomad_v2.1_sv.grch37.0based.AC.AN.AF.sorted.bed.gz</annoFile>
 		  </grch37>
 		  <grch38>
-			  <rawFile>gnomad/grch38/gnomad_v2_sv.sites.liftover38.bed</rawFile>
-			  <annoFile>gnomad/grch38/gnomad_grch38.0based.AC.AN.AF.sorted.bed.gz</annoFile>
+			  <rawFile>gnomad/grch38/sv/gnomad_v2.1_sv.sites.bed.gz</rawFile>
+			  <annoFile>gnomad/grch38/sv/gnomad_v2.1_sv.grch38.0based.AC.AN.AF.sorted.bed.gz</annoFile>
 		  </grch38>
+		  
 	  </gnomad>
 	  
-	  <ngc>
+	  <lov>
 		  <lovbin>liftOver</lovbin>
-		  <lovchain>genomes/GRCh37_to_GRCh38.chain.gz</lovchain>
+		  <!-- <lovchain>lov/hg19ToHg38.over.chain.gz</lovchain> -->
+		  <lovchain>lov/GRCh37_to_GRCh38.chain.gz</lovchain>
+	  </lov>
+	  
+	  <ngc>
 		  <grch37>
 			  <annoFile>ngc/grch37/NGC.samples.0based.grch37.sorted.bed.gz</annoFile>
 		  </grch37>
@@ -139,15 +144,16 @@
 	  
 	  <dbvar>
 		  <grch37>
-			 <clingen>clinvar/grch37/nstd45/nstd45.GRCh37.variant_call.vcf.gz</clingen>
-	                 <user>clinvar/grch37/nstd51/nstd51.GRCh37.variant_call.vcf.gz</user>
-	                 <clinvar>clinvar/grch37/nstd102/nstd102.GRCh37.variant_call.vcf.gz</clinvar>
-		  	 <annoFile>clinvar/grch37/dbvar_grch37.0based.CG.UR.CV.sorted.bed.gz</annoFile>
+			 <clingen>dbvar/grch37/nstd45.GRCh37.variant_call.vcf.gz</clingen>
+	                 <user>dbvar/grch37/nstd51.GRCh37.variant_call.vcf.gz</user>
+	                 <clinvar>dbvar/grch37/nstd102.GRCh37.variant_call.vcf.gz</clinvar>
+		  	 <annoFile>dbvar/grch37/dbvar_grch37.0based.CG.UR.CV.sorted.bed.gz</annoFile>
 		 </grch37>
 		 <grch38>
-			<user>clinvar/grch38/nstd51/nstd51.GRCh38.variant_call.vcf.gz</user>
-			<clinvar>clinvar/grch38/nstd102/nstd102.GRCh38.variant_call.vcf.gz</clinvar>
-			<annoFile>clinvar/grch38/dbvar_grch38.0based.CG.UR.CV.sorted.bed.gz</annoFile>
+			<clingen>dbvar/grch38/nstd45.GRCh38.variant_call.vcf.gz</clingen>
+			<user>dbvar/grch38/nstd51.GRCh38.variant_call.vcf.gz</user>
+			<clinvar>dbvar/grch38/nstd102.GRCh38.variant_call.vcf.gz</clinvar>
+			<annoFile>dbvar/grch38/dbvar_grch38.0based.CG.UR.CV.sorted.bed.gz</annoFile>
 		</grch38>
 	  </dbvar>
 	  <decipher>
@@ -167,7 +173,7 @@
 			<annoFile>user/promoter/grch37/user_grch37.0based.promoter.sorted.merged.bed.gz</annoFile>
 		</grch37>
 		<grch38>
-			<rawFile>user/promoter/grch38/Homo_sapiens.GRCh38.100.gtf.gz</rawFile>
+			<rawFile>user/promoter/grch38/Homo_sapiens.GRCh38.98.gtf.gz</rawFile>
 			<annoFile>user/promoter/grch38/user_grch38.0based.promoter.sorted.merged.bed.gz</annoFile>
 		</grch38>
 		<tag>promoter</tag>
@@ -194,21 +200,6 @@
 	  <!-- <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/Homo_sapiens.GRCh38.96.gtf.gz</grch38> -->
 	  	<grch38>ensembl/grch38/release-98/Homo_sapiens.GRCh38.98.gtf.gz</grch38>
 		  <!-- <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/release-100/Homo_sapiens.GRCh38.100.gtf.gz</grch38> -->
-	  	<ensVarAnnot>
-		  <ensCoordBin>extractCoord4Ensembl.py</ensCoordBin>
-		  <ensGrangeBin>writeGenomicRanges.R</ensGrangeBin>
-		  <i>%inFile%</i>
-		  <o>%outFile%</o>
-		  <c>%ngcID%</c>
-		  <g>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/genelist/previous/NGC_genelist_allNamesOnly-20181016.txt</g>
-		  <x38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/ensBioMart_grch38_v96_exon_info_190503.8bp.sorted.txt</x38>
-		  <x37>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh37/ensembl_grch37.exons.sorted.bed</x37>
-		  <t38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/ensBioMart_grch38_v96_transcript_info_190503.sorted.txt</t38>
-		  <t37>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh37/ensembl_grch37.transcript.sorted.bed</t37>
-		  <n>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/phenotypes/latest_PhenotypeInformation.txt</n>
-		  <d>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/hpo/feb-2019/ALL_SOURCES_ALL_FREQUENCIES_phenotype_to_genes.txt</d>
-		  <p>%pedFile%</p>
-	  	</ensVarAnnot>
 	  	<ensType>
 		  	<offset>
 			 	<transcript>1000</transcript>
@@ -236,10 +227,10 @@
   	<overlapMerge> 
 	  	<ovBin>parseVCF.py</ovBin>
 	  	<mergeBin>mergeAnnotVCF.py</mergeBin>
-     		<ovFrac>0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0</ovFrac>
+		<!-- <ovFrac>0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0</ovFrac> -->
 	  	<famOverlapFrac>True</famOverlapFrac>
      		<!-- <famOverlapFrac>False</famOverlapFrac> -->
-			<!-- <ovFrac>0.7</ovFrac> -->
+		<ovFrac>0.7</ovFrac>
   	</overlapMerge>
 
   	<par>
