@@ -455,3 +455,213 @@ class CONFIG:
 
         return self.config_dict
 
+    def getUserConfigDict(self,userConfigFile):
+        ''' Subroutine to read process the User defined configuration file and
+            return as dictionary object 
+        '''
+
+        fh = open(userConfigFile)
+
+        for lines in fh:
+            lines = lines.strip()
+            strs = re.split('\n',lines)
+            
+            if re.search('\=',strs[0]) and strs[0] !='':
+                pass
+            elif strs[0]:
+                print 'The input user configuration file is not in correct format'+\
+                        'Please read the online documentation '
+                print 'The faulty line is: ',lines
+                sys.exit()
+        
+        fh.close()
+        
+        userConfigDict = OrderedDict()
+
+        fh = open(userConfigFile)
+        for lines in fh:
+            lines = lines.strip()
+            strs = re.split('\=',lines);strs=[x.strip() for x in strs]
+            if strs[0] and strs[1]:
+                userConfigDict[strs[0]] = strs[1]
+        
+        fh.close()
+
+        return userConfigDict
+
+    def updateBaseXML(self,baseConfigDict,userConfigDict):
+        ''' Subroutine to update the Base XML file with user specified 
+            configuration file 
+        '''
+
+        for user_key in userConfigDict:
+            if re.search('genomeBuild',user_key):
+                try:
+                    baseConfigDict['general'][user_key] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: genomeBuild'
+                
+            if re.search('resourceDir',user_key):
+                try:
+                    baseConfigDict['general'][user_key] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: resourceDir'
+            if re.search('refFasta',user_key):
+                try:
+                    baseConfigDict['general'][user_key] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: refFasta'
+            
+            if re.search('gnomad_g',user_key):
+                try:
+                    baseConfigDict['annotation']['cust-annot']['GNOMADg']['vcf'] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: GNOMADg'
+                 
+            if re.search('gnomad_e',user_key):
+                try:
+                    baseConfigDict['annotation']['cust-annot']['GNOMADe']['vcf'] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: GNOMADe'
+
+            if re.search('dir_cache',user_key):
+                try:
+                    baseConfigDict['annotation']['defPar'][user_key] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: <dir_cache>'
+
+            if re.search('^exac$',user_key):
+                try:
+                    baseConfigDict['annotation']['cust-annot']['EXAC']['vcf'] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: <EXAC>'
+  
+            if re.search('^exac_t$',user_key):
+                try:
+                    baseConfigDict['annotation']['cust-annot']['EXACt']['vcf'] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: <exac_t>'
+ 
+            if re.search('^clinvar$',user_key):
+                try:
+                    baseConfigDict['annotation']['cust-annot']['CLINVAR']['vcf'] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: <CLINVAR>'
+ 
+            if re.search('^hgmd$',user_key):
+                try:
+                    baseConfigDict['annotation']['cust-annot']['HGMD']['vcf'] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: <HGMD>'
+ 
+            if re.search('^cadd_snv$',user_key):
+                try:
+                    baseConfigDict['annotation']['plugIn']['CADD']['cadd_snv'] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: <cadd_snv>'
+ 
+            if re.search('^cadd_indel$',user_key):
+                try:
+                    baseConfigDict['annotation']['plugIn']['CADD']['cadd_indel'] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: <cadd_indel>'
+ 
+            if re.search('^exac_pli$',user_key):
+                try:
+                    baseConfigDict['annotation']['plugIn']['ExACpLI'] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: <ExACpLI>'
+ 
+            if re.search('^revel$',user_key):
+                try:
+                    baseConfigDict['annotation']['plugIn']['REVEL'] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: <REVEL>'
+ 
+            if re.search('^region_exons$',user_key):
+                try:
+                    baseConfigDict['regions']['exons'] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: <exons>'
+ 
+            if re.search('^region_par$',user_key):
+                try:
+                    baseConfigDict['regions']['PAR'] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: <PAR>'
+
+            if re.search('^ensembl$',user_key):
+                try:
+                    baseConfigDict['varPrior']['params']['l'] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: <ensembl>'
+
+            if re.search('^hpo$',user_key):
+                try:
+                    baseConfigDict['famFilter'][user_key] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: <hpo>'
+
+            if re.search('^phenotypes$',user_key):
+                try:
+                    baseConfigDict['famFilter'][user_key] = userConfigDict[user_key]
+                except KeyError:
+                    print 'The corresponding xml-field: ',user_key,' doesnot exist'
+                    print 'Please enter correct xml-field tag: <phenotypes>'
+
+
+        return baseConfigDict
+
+    def convertTxt2XL(self,inpDir):
+        ''' Utility function to convert list of Text files to Excel sheets '''
+
+        #textfiles = [join(inpDir,f) for f in os.listdir(inpdir) 
+        #                        if isfile(join(inpDir,f,'filtering')) and '.txt' in f ]
+
+        wb = Workbook()
+
+        for fam_id in os.listdir(inpDir):
+            #fam_id = 'TwEx_EX1912835-TwEx_EX1912836-TwEx_EX1912837'
+            try:
+                txt_file = os.listdir(join(inpDir,fam_id,'filtering'))
+                #print fam_id,'\t',fam_id[0]
+                #print txt_file
+                proband_id = re.split('\-',fam_id)[0]
+                path_txt_file = join(inpDir,fam_id,'filtering',txt_file[0])
+                #worksheet = workbook.add_sheet(str(proband_id))
+
+                f = open(path_txt_file,'r+')
+                data = f.readlines()
+               
+                proband_id = fam_id
+                wb.create_sheet(proband_id)
+                this_sheet = wb[proband_id]
+                for row in data:
+                    this_sheet.append(row.split('\t'))
+                f.close()
+
+            except IndexError:
+                print fam_id
+
+        wb.save(join(inpDir,'exeter_exomes_vars_famID.xlsx'))
+
+
+
