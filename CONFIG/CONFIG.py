@@ -28,6 +28,7 @@ class CONFIG:
     def str2bool(self,v):
         ''' Utility function to convert string/unicode objects ('yes','true','t','1')
             of boolean type (True/False) '''
+        v = v[0]        
         return v.lower() in ('yes','true','t','1')
 
     def display(self):
@@ -105,14 +106,14 @@ class CONFIG:
                     'ref':self.ref_built,'launch':self.launch_flag
                    }
         print "\n\n"
-        print 'Entered Manifest file is: ',self.manifest_file
-        print 'Entered Analysis file is: ',self.xml_file
-        print 'Entered Project date  is: ',self.proj_date
-        print 'Entered Analysis step is: ',self.anal_type
-        print 'Entered Work directory is: ',self.work_dir
-        print 'Entered family IDs file is: ',self.fam_file
-        print 'Entered Analysis genome build is: ',self.ref_built
-        print 'Entered SV pipeline launch flag option is: ',self.launch_flag
+        print 'Entered Manifest file is: ',''.join(self.manifest_file)
+        print 'Entered Analysis file is: ',''.join(self.xml_file)
+        print 'Entered Project date  is: ',''.join(self.proj_date)
+        print 'Entered Analysis step is: ',''.join(self.anal_type)
+        print 'Entered Work directory is: ',''.join(self.work_dir)
+        print 'Entered family IDs file is: ',''.join(self.fam_file)
+        print 'Entered Analysis genome build is: ',''.join(self.ref_built)
+        print 'Entered SV pipeline launch flag: ',''.join(self.launch_flag)
 
         print "\n\n"
 
@@ -224,8 +225,8 @@ class CONFIG:
                             DECIPHER',action='store',dest='dbType',required=True)
         parser.add_argument('-r','--reference',help='Reference genome: v37/v38',
                             action='store',dest='refGenome',required=True)
-        parser.add_argument('-l','--liftOverFlag',help='Lift over flag: 0/1;'+ 
-                            '0=>False and 1=>True',action='append',dest='lovFlag',
+        parser.add_argument('-l','--liftOverFlag',help='Lift over flag:'+ 
+                            'True/False ',action='append',dest='lovFlag',
                             required=False)
         parser.add_argument('-p','--projectDate',help='Project date',
                             action='append',dest='project',required=False)
@@ -235,7 +236,7 @@ class CONFIG:
         self.xml_file = self.results.xmlFile
         self.db_name = self.results.dbType
         self.ref_file = self.results.refGenome
-        self.lov_flag = self.results.lovFlag
+        self.lov_flag = self.str2bool(self.results.lovFlag)
         self.proj_date = self.results.project
 
         cmd_dict = {'manifest':self.m_file,'analysis':self.xml_file,
@@ -243,11 +244,11 @@ class CONFIG:
                     'project':self.proj_date}
 
         print "\n\n"
-        print 'Entered Manifest file is: ',self.m_file
-        print 'Entered Analysis file is: ',self.xml_file
-        print 'Entered Project date  is: ',self.proj_date
-        print 'Entered database is: ',self.db_name
-        print 'Entered refernce genome: ',self.ref_file
+        print 'Entered Manifest file is: ',''.join(self.m_file)
+        print 'Entered Analysis file is: ',''.join(self.xml_file)
+        print 'Entered Project date  is: ',''.join(self.proj_date)
+        print 'Entered database is: ',''.join(self.db_name)
+        print 'Entered refernce genome: ',''.join(self.ref_file)
         print 'Entered lift over flag is: ',self.lov_flag
         print "\n\n" 
 

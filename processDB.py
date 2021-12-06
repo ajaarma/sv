@@ -48,14 +48,11 @@ if __name__=="__main__":
     except:
         proj_date = None
 
-    print manifest_file,xml_file,db_name,ref_genome,lift_ov_flag,proj_date
 
     objC = CONFIG()
     objD = dbSV()
 
     configDict = objC.getConfigDict(xml_file)
-    print configDict['refseq']
-
 
     # Assign boolean True/False to family overlap fraction option
     a1 = configDict['overlapMerge']['famOverlapFrac']
