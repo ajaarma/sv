@@ -33,6 +33,31 @@ class CONFIG:
     def display(self):
         print "Inside CONFIG class. Creating a configuration file for the NGC-SNV pipeline"
 
+    def processXMLArguments(self):
+        ''' Subroutine to process user configuration file '''
+        
+        cmd_dict = {}
+        parser = argparse.ArgumentParser(
+                     description = 'python createAnalysisXML.py -u <user-config> \n'
+                                           '-b <base-xml-file> -o <out-xml-file> \n'
+                    )
+
+        parser.add_argument('-u','--userConfig',help='User specified config file',
+                                    action='store',dest='userConfig',required=True)
+        parser.add_argument('-b','--baseXml',help='Base XML config file',
+                                    action='store',dest='baseXML',required=True)
+        parser.add_argument('-o','--outXml',help='Output XML file',
+                                    action='store',dest='outXML',required=True)
+
+        self.results = parser.parse_args()
+        self.user_config = os.path.abspath(self.results.userConfig)
+        self.base_xml = os.path.abspath(self.results.baseXML)
+        self.out_xml = os.path.abspath(self.results.outXML)
+
+        cmd_dict = {'userConfig':self.user_config,'baseXml':self.base_xml,'outXml':self.out_xml}
+
+        return cmd_dict
+
     def parseSVCommandArgs(self):
 
         cmdDict = {}
