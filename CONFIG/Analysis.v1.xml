@@ -5,7 +5,7 @@
  	<general>
 		<author>aak@ebi.ac.uk</author>
 	  	<date>21-11-2021</date> <!-- DD-MM-YY -->
-		<resourceDir>/hps/research1/dunham/resources/</resourceDir>
+		<resourceDir>/hps/nobackup/research/dunham/sv/demo/resources</resourceDir>
 		<genomeBuild>grch37</genomeBuild>
 		<extName>.0based.</extName>
 		<task></task> <!-- Possible values: annotation/vcfanno/annotsv -->
@@ -84,7 +84,7 @@
 		  </grch37>
 		  <grch38>
 			  <rawFile>gnomad/grch38/sv/gnomad_v2.1_sv.sites.bed.gz</rawFile>
-			  <annoFile>gnomad/grch38/sv/gnomad_v2.1_sv.grch38.0based.AC.AN.AF.sorted.bed.gz</annoFile>
+			  <annoFile>gnomad/grch38/sv/gnomad_v2.1_sv.b37.liftover.b38.0based.AC.AN.AF.sorted.bed.gz</annoFile>
 		  </grch38>
 		  
 	  </gnomad>
@@ -97,9 +97,11 @@
 	  
 	  <ngc>
 		  <grch37>
+			  <rawFile>.</rawFile>
 			  <annoFile>ngc/grch37/NGC.samples.0based.grch37.sorted.bed.gz</annoFile>
 		  </grch37>
 		  <grch38>
+			  <rawFile>.</rawFile>
 			  <annoFile>ngc/grch38/NGC.samples.0based.grch38.sorted.bed.gz</annoFile>
 		  </grch38>
 		  <ci>True</ci>
@@ -110,35 +112,35 @@
 	
 	  <ens_trans>
 		  <grch37>
-			  <annoFile>ensembl/grch37/release-98/ensembl_grch37.transcript.1000.sorted.bed.gz</annoFile>
+			  <annoFile>ensembl/grch37/ensembl_grch37.transcript.1000.sorted.bed.gz</annoFile>
 		  </grch37>
 		  <grch38>
-			  <annoFile>ensembl/grch38/release-98/ensembl_grch38.transcript.1000.sorted.bed.gz</annoFile>
+			  <annoFile>ensembl/grch38/ensembl_grch38.transcript.1000.sorted.bed.gz</annoFile>
 		  </grch38>
 	  </ens_trans>
 	  <ens_exon>
 		  <grch37>
-			  <annoFile>ensembl/grch37/release-98/ensembl_grch37.exons.50.sorted.bed.gz</annoFile>
+			  <annoFile>ensembl/grch37/ensembl_grch37.exons.50.sorted.bed.gz</annoFile>
 		  </grch37>
 		  <grch38>
-			  <annoFile>ensembl/grch38/release-98/ensembl_grch38.exons.50.sorted.bed.gz</annoFile>
+			  <annoFile>ensembl/grch38/ensembl_grch38.exons.50.sorted.bed.gz</annoFile>
 		  </grch38>
 	  </ens_exon>
 	  <ref_gene>
 		<grch37>
-			<annoFile>refseq/grch37/20201026/refseq_grch37.gene.1000.sorted.bed.gz</annoFile>
+			<annoFile>refseq/grch37/refseq_grch37.gene.1000.sorted.bed.gz</annoFile>
   		</grch37>
 		<grch38>
-			<annoFile>refseq/grch38/20210518/refseq_grch38.gene.1000.sorted.bed.gz</annoFile>
+			<annoFile>refseq/grch38/refseq_grch38.gene.1000.sorted.bed.gz</annoFile>
 		</grch38>
 	  </ref_gene>
 
 	  <ref_exon>
 		  <grch37>
-			  <annoFile>refseq/grch37/20201026/refseq_grch37.exons.50.sorted.bed.gz</annoFile>
+			  <annoFile>refseq/grch37/refseq_grch37.exons.50.sorted.bed.gz</annoFile>
 		  </grch37>
 		  <grch38>
-			  <annoFile>refseq/grch38/20210518/refseq_grch38.exons.50.sorted.bed.gz</annoFile>
+			  <annoFile>refseq/grch38/refseq_grch38.exons.50.sorted.bed.gz</annoFile>
 		  </grch38>
 	  </ref_exon>
 	  
@@ -194,7 +196,6 @@
 	  	<db>
 		  <value>gnomad</value>
 		  <value>ngc</value>
-		  <!--  <value>ensembl</value> -->
 		  <value>ens_trans</value>
 		  <value>ens_exon</value>
 		  <value>ref_gene</value>
@@ -202,15 +203,12 @@
 		  <value>dbvar</value>
 		  <value>decipher</value>
 		  <value>user</value>
-		  <!--  <value>fam</value> -->
 	  	</db>
   	</annoDB>
 		
 	<ensembl>
-		<grch37>ensembl/grch37/release-98/Homo_sapiens.GRCh37.87.gtf.gz</grch37>
-	  <!-- <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/Homo_sapiens.GRCh38.96.gtf.gz</grch38> -->
-	  	<grch38>ensembl/grch38/release-98/Homo_sapiens.GRCh38.98.gtf.gz</grch38>
-		  <!-- <grch38>/rds/project/flr24/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/resources/ensembl/GRCh38/release-100/Homo_sapiens.GRCh38.100.gtf.gz</grch38> -->
+		<grch37>ensembl/grch37/Homo_sapiens.GRCh37.87.gtf.gz</grch37>
+	  	<grch38>ensembl/grch38/Homo_sapiens.GRCh38.98.gtf.gz</grch38>
 	  	<ensType>
 		  	<offset>
 			 	<transcript>1000</transcript>
@@ -253,7 +251,7 @@
 		<scripts>formatGT.py</scripts>
 	</formatGT>
 
-	<imprint>genelist/imprinted_genes_CNV_20200424.txt</imprint>
+	<imprint>curated/imprinted_genes_CNV_20200424.txt</imprint>
   
   	<famFilter>
 	  	<famBin>familyFiltering.R</famBin>

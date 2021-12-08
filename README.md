@@ -139,13 +139,13 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 	
 		
 		- Blacklist regions
-		- Download: https://github.com/Boyle-Lab/Blacklist/blob/master/lists/Blacklist_v1/hg38-blacklist.bed.gz
+		- Download: http://mitra.stanford.edu/kundaje/akundaje/release/blacklists/hg19-human/wgEncodeHg19ConsensusSignalArtifactRegions.bed.gz
 		- Put it here: <resource-path>/user/blacklist/grch37/
 		- Example command:
 		$ python processDB.py -a CONFIG/Analysis_user.grch37.xml -d user_blacklist
 				      -l false -m NA -p NA
 	 
-	
+		
 	
 	 
 
