@@ -150,7 +150,8 @@ class SLURM:
                 sample_path = strs[10]
                 sample_dir = os.path.dirname(sample_path)
                 #sample_sv_name = sample_dir+"/"+sample_id+".SV.vcf.gz"
-                sample_sv_name = re.split('.genome.vcf.gz',sample_path)[0]+'.SV.vcf.gz'
+                #sample_sv_name = re.split('.genome.vcf.gz',sample_path)[0]+'.SV.vcf.gz'
+                sample_sv_name = strs[10] #re.split('.genome.vcf.gz',sample_path)[0]+'.SV.vcf.gz'
                 
                 if famDict.has_key(fam_id):
                    tmp_id = famDict[fam_id]['sample']
@@ -852,101 +853,6 @@ class SLURM:
 
         return wh
 
-    def checkJobStatusChr(self,job_dir,chr_list,jobDict):
-
-        job_status = []
-        verify_status = []
-
-        for ele in chr_list:
-            job_status.append(0)
-
-        job_sum = 0
-        verify_sum = 0
-        alldone = 0
-        #### Status =chromosome 25*2 = 50 ####
-        while job_sum !=50:
-            i = 0
-            for job_id in jobDict:
-            
-                job_str = "sacct --format=state -j "+str(job_id)
-                out = subprocess.check_output(job_str,shell=True)
-                out_strs = re.split("\W|\s",out)
-                out_strs = [x for x in out_strs if x]
-                status = out_strs[1]
-                if status=="PENDING":
-                    job_status[i] = 0
-                if status=="COMPLETED":
-                    job_status[i] = 2
-                i = i+1
-            job_sum = sum(status)
-       
-        if sum_status==50:
-            for i in range(0,len(chr_list)):
-                chr_num = chr_list[i]
-                stat_file = job_dir+"/Job_status_"+str(chr_num)+".txt"
-                fh = open(stat_file)
-                for lines in fh:
-                    lines = lines.strip()
-                    verify_status[i] = int(lines)
-                fh.close()
-            verify_sum = sum(verify_status)
-            if verify_sum==50:
-                alldone = 1
-            else:
-                alldone = 0
-
-        return sum_status, verify_sum, alldone
-
-    def checkJobStatusMC(self,tmp_stat_file,job_id):
-
-        verify_status = []
-
-        job_status = 0
-
-        while job_status ==0:
-
-            job_str = "sacct --format=state -j "+str(job_id)
-            out = subprocess.check_output(job_str,shell=True)
-            out_strs = re.split("\W|\s",out)
-            out_strs = [x for x in out_strs if x]
-            
-            status = out_strs[1]
-            if status=="PENDING":
-                job_status=0
-            if status=="COMPLETED":
-                job_status=2
-                time.sleep(120)
-                try:
-                    #stat_file = job_dir+"/Job_status_"+str(chr_num)+".txt"
-                    stat_file = tmp_stat_file
-                    fh = open(stat_file)
-                    for lines in fh:
-                        lines = lines.strip()
-                        verify_status = int(lines)
-        
-                    fh.close()
-                except:
-                    verify_status = 0
-                    pass
-
-            print " ".join(out_strs)
-            print "job status: ",job_status
-            print "Next update after 600 seconds\n"
-            time.sleep(600)
-
-        if job_status==verify_status:
-            return job_status
-        else:
-            return job_status
-            
-    def launchSlurmJobs(self,slurm_file):
-
-        out = subprocess.check_output("sbatch "+slurm_file,shell=True)
-        job_strs = re.split("\W|\s",out)
-        job_id = job_strs[3]
-
-        return job_id
-        
     def checkErrorFile(self,out_file,wh,flag,status_file=[]):
         
         if_cmd = "\nif [ ! -e "+out_file+" ]; then \n"
@@ -967,4 +873,342 @@ class SLURM:
 
         return wh
 
-    
+class DEMO:
+    ''' Class containing subroutines & methods for generating annoated SVs'''
+
+    def __init__(self, elements=[]):
+        self.__elements={}
+        for e in elements:
+            self.__elements[e]=1
+
+
+    def writeDemoVcfanno(self,manifest,configDict,famDict,out_dir,fam_id,ngc_id,
+                          svcf,ilm_id,tmp_stat_file,script,genome_ref,wh):
+
+        ''' Subroutine for launching vcfanno based annotation '''
+
+        global script_path 
+        script_path = script
+
+        db_list = configDict["annoDB"]["db"]["value"]
+       
+        vcfannoDict = configDict['vcfanno']
+        vcfannoBin = vcfannoDict['binaries']
+        if vcfannoDict['lua']:
+            lua = script_path+"/"+vcfannoDict['lua']
+
+        if re.search("37",genome_ref):
+            toml = vcfannoDict['toml37']
+        elif re.search("38",genome_ref):
+            toml = vcfannoDict['toml38']
+
+        params = vcfannoDict['params']['value']
+        params = " ".join(["-"+str(x) for x in params])
+        cores = str(vcfannoDict['p'])
+
+        famSVFile = svcf
+        famSVName = ilm_id
+        
+        inp_svFile = famSVFile
+        #out_edit_svFile_gz = out_dir+"/"+ngc_id+".SV.edit.vcf.gz"
+        out_svFile = out_dir+"/"+ngc_id+".SV.edit.annot.vcf"
+
+        ''' 
+        #Extracting information related to Editing Raw VCFfiles for processing Ins & BND 
+        # points
+        bndBin = script_path+"/"+configDict['processBND']['binaries']
+        inpBndFile = inp_svFile
+        outBndFile = out_edit_svFile_gz
+        edit_cmd = ["python",bndBin,"-i",inpBndFile,"-o",outBndFile]
+        
+        print >>wh,"################# Begining of Editing Raw Input VCF File for BreakEnd Points ####################\n"
+        print >>wh,"echo \"Launching processBND step\"\n"
+
+        print >>wh," ".join(edit_cmd)
+        wh = self.checkErrorFile(outBndFile,wh,"error",tmp_stat_file)
+        print >>wh,"echo \"End of processBND step\"\n"
+        print >>wh,"################# End of Editing Raw Input VCF File for BreakEnd Points ####################\n"
+        '''
+        print >>wh,"################ Begin of Normalizing multi allelic sites ##################################\n"
+        
+        print >>wh,'echo \"Begin of Normalizing Input VCF file\"'
+        inp_svFile_gz = inp_svFile
+        inp_svFile_gz_name = os.path.basename(inp_svFile_gz)
+        out_edit_norm_svFile_gz = out_dir+'/'+\
+                                  re.split('.vcf.gz',inp_svFile_gz_name)[0]+\
+                                  '.norm.vcf.gz' 
+        norm_cmd = ['bcftools norm -m - ',inp_svFile_gz,' | bgzip -c > ',
+                        out_edit_norm_svFile_gz
+                   ]
+        norm_index_cmd = 'tabix -p vcf '+out_edit_norm_svFile_gz
+        print >>wh,' '.join(norm_cmd)
+        print >>wh,norm_index_cmd
+        
+        wh = self.checkErrorFile(out_edit_norm_svFile_gz,wh,'error',tmp_stat_file)
+        print >>wh,'echo \"End of normalizing input vcf file\"'
+        print >>wh,"################ End of Normalizing multi allelic sites   ##################################\n"
+
+        inp_svFile_gz = out_edit_norm_svFile_gz#out_edit_svFile_gz
+        out_edit_norm_annot_svFile_gz = out_dir+"/"+ngc_id+".SV.edit.norm.annot.vcf.gz"
+        
+        tmp_cmd = [vcfannoBin,params,"-p",cores,toml,inp_svFile_gz,"| bgzip -c >",
+                                                    out_edit_norm_annot_svFile_gz]
+
+
+        print >>wh,"################# Begining of Annotation using vcfanno ####################\n"
+        print >>wh,"echo \"Launching vcfanno step\"\n"
+        print >>wh," ".join(tmp_cmd)
+
+        wh = self.checkErrorFile(out_edit_norm_annot_svFile_gz,wh,"error",
+                                                            tmp_stat_file)
+        
+        print >>wh,"tabix -p vcf "+out_edit_norm_annot_svFile_gz
+        #print >>wh,"rm "+out_edit_norm_annot_svFile
+        print >>wh,"\n"
+        print >>wh,"echo \"End of vcfanno step\"\n"
+
+        print >>wh,"################# End of Annotation using vcfanno ####################\n"
+
+
+        return out_edit_norm_annot_svFile_gz,wh
+
+    def writeDemoExtractFields(self,configDict,manifest,ngc_id,fam_id,
+                                inp_svFile,tmp_stat_file,genome_ref,wh):
+
+        ''' Subroutine to extract vcfanno related fields from the annotated 
+            VCF file
+        '''
+        db_list = configDict["annoDB"]["db"]["value"]
+
+        for i,db in enumerate(db_list):
+            if db == "ngc" and re.search("38",genome_ref):
+                db_list[i] = "ngc38"
+                db_list.append("ngclov")
+            if db == "ngc" and re.search("37",genome_ref):
+                db_list[i] = "ngc37"
+
+        db_list = [str(x.strip()) for x in db_list]
+        db_list.sort()
+        db_list.insert(0,"rest")
+
+        out_dir = os.path.dirname(inp_svFile)
+        out_annotDB = out_dir+"/annotDB"
+        out_overlap = out_dir+"/overlap"
+
+        print >>wh, "mkdir -p "+out_annotDB
+        print >>wh, "mkdir -p "+out_overlap
+
+        coord_file = []
+
+        for db in db_list:
+
+            print >>wh,"echo \"Extracting Relevant fields for downstream analysis: "+\
+                        db," \" \n"
+
+            baseFile = os.path.basename(inp_svFile)
+            inp_svFile_orig = inp_svFile
+
+            if db != "fam":
+                out_svFile_tsv = out_annotDB+"/"+re.split(".vcf.gz",baseFile)[0]+\
+                                                            "."+db.lower()+".bed"
+                out_svFile_tsv_gz = out_svFile_tsv+".gz"
+
+            elif db == "fam":
+                inp_svFile_orig = inp_svFile
+                inp_svFile = re.split(".vcf.gz",inp_svFile)[0]+".fam.vcf.gz"
+                out_svFile_tsv = out_annotDB+"/"+re.split(".vcf.gz",baseFile)[0]+\
+                                                                       ".fam.bed" 
+                out_svFile_tsv_gz = out_svFile_tsv+".gz"
+
+            if db == "rest":
+                if re.search("38",genome_ref):
+                    cmd = "bcftools query -f \"%CHROM+%POS+%INFO/END+%INFO/SVTYPE+" \
+                          "%ID+[%GT]\\t%REF\\t%ALT\\t%QUAL\\t%FILTER\\t%INFO/CIPOS"\
+                          "\\t%INFO/CIEND\\t%INFO/SVLEN\\t[%GT:%AB]"\
+                          "\\n\" "+inp_svFile+" | bgzip -c > "+out_svFile_tsv_gz
+                
+                elif re.search("37",genome_ref):
+                    cmd = "bcftools query -f \"%CHROM+%POS+%INFO/END+%INFO/SVTYPE+"\
+                          "%ID+[%GT]\\t%REF\\t%ALT\\t%QUAL\\t%FILTER\\t%INFO/CIPOS"\
+                          "\\t%INFO/CIEND\\t%INFO/SVLEN\\t[%GT:%AB]"\
+                          "\\n\" "+inp_svFile+" | bgzip -c > "+out_svFile_tsv_gz
+                coord_file = out_svFile_tsv+".gz"
+
+            elif db in ["dbvar","gnomad","ngc38","decipher","ngc37",
+                                 'ens_trans','ens_exon','ref_gene','ref_exon',
+                                                        'promoter','blacklist']:
+
+                cmd = "bcftools query -f \"%CHROM+%POS+%INFO/END+%INFO/SVTYPE+"\
+                      "%ID+[%GT]\\t%INFO/CIPOS\\t%INFO/CIEND\\t%INFO/"+db+\
+                       "_s\\t%INFO/"+db+"_e\\t%INFO/"+db+"_ov_id\\t%INFO/left_"+\
+                       db+"_s\\t%INFO/left_"+db+"_e\\t%INFO/left_"+db+\
+                       "_ov_id\\t%INFO/right_"+db+"_s\\t%INFO/right_"+db+\
+                       "_e\\t%INFO/right_"+db+"_ov_id\\n\" " +inp_svFile+\
+                       "| bgzip -c > "+out_svFile_tsv_gz
+            
+            if db != "ensembl": 
+                print >>wh,cmd
+                wh = self.checkErrorFile(out_svFile_tsv+".gz",wh,"error",tmp_stat_file)
+            else:
+                print >>wh,cmd
+                print >>wh,"bgzip -c "+out_svFile_tsv+" > "+out_svFile_tsv+".gz"
+                wh = self.checkErrorFile(out_svFile_tsv+".gz",wh,"error",tmp_stat_file)
+                print >>wh,"rm "+ out_svFile_tsv
+            print >>wh,"\n"
+        
+        db_list = []
+        
+        print >>wh,'echo "Removing the annotation file\n"'
+        print >>wh,'rm -rf '+inp_svFile
+
+        print >>wh,"############### End of reformatting and indexing VCF ####################\n"
+        
+        return out_annotDB, wh
+
+    def writeDemoOverlapMerge(self,configDict,manifest,ngc_id,fam_id,xml_file,
+                                      out_annotdb,tmp_stat_file,genome_ref,wh):
+
+        db_list = configDict["annoDB"]["db"]["value"]
+        db_list = [str(x.strip()) for x in db_list]
+
+        for i,db in enumerate(db_list):
+            if db == "ngc" and re.search("38",genome_ref):
+                db_list[i] = "ngc38"
+                db_list.append("ngclov")
+            if db == "ngc" and re.search("37",genome_ref):
+                db_list[i] = "ngc37"
+
+        db_list.sort()
+        db_list.insert(0,"rest")
+
+        overlapBin = script_path+'/'+configDict['overlapMerge']['ovBin']
+        mergeBin = script_path+'/'+configDict['overlapMerge']['mergeBin']
+        ovFrac_list = re.split("\,",configDict['overlapMerge']['ovFrac'])
+
+        out_overlap = os.path.dirname(out_annotdb)+"/overlap"
+        out_annotdb = os.path.dirname(out_annotdb)+"/annotDB"
+
+        #print annot_files
+        rest_file = out_annotdb+"/"+ngc_id+".SV.edit.norm.annot.rest.bed.gz"
+
+        print >>wh, "############# Begin of Overlap and Formatting Step ###############\n"
+
+        out_ovp_list = []
+
+
+        for db_type in db_list:
+            ovFrac_list = re.split("\,",configDict['overlapMerge']['ovFrac'])
+            
+            if not db_type in ["ensembl","rest"]:
+                
+                print >>wh,"echo \"Start of Overlap and formatting step for "+\
+                                                        "db: "+db_type+"\"\n"
+                
+                if not db_type in ['gnomad','ngc38','ngclov','ngc37']:
+                    
+                    ovFrac = '0.0'
+                    print >>wh,"echo \"Overlap fraction used: "+str(ovFrac)+"\"\n" 
+                    ele_file = out_annotdb+"/"+ngc_id+".SV.edit.norm.annot."+\
+                                                db_type.lower()+".bed.gz"
+                    overlap_cmd = ["python",overlapBin,"-i",ele_file,"-f",ngc_id,
+                                            "-t","overlap","-a",db_type.lower(),
+                                                      "-m",manifest,"-r",ovFrac,
+                                                                  '-x',xml_file
+                                  ]
+                    print >>wh,' '.join(overlap_cmd)
+                    out_svFile_tsv_gz = out_overlap+"/"+".".join([ngc_id,
+                                                         db_type.lower(),
+                                                            str(ovFrac)+\
+                                                 ".overlap.same.bed.gz"])
+                    wh = self.checkErrorFile(out_svFile_tsv_gz,wh,"error",tmp_stat_file)
+                    #print >>wh,"echo \"End of Overlap and formatting step for db: "+\
+                                                                          #db_type+"\"\n"
+                    
+                else:
+                    cmd_list = []
+                    out_tsv_gz_list = []
+                    
+                    # Added this step for computing NGC family internal overlap 
+                    # with range of overlap fractions [0.0,1.0]
+                    #
+                    # For gnomad and ngclov-37 default is 0.70 overlap fraction
+
+                    if db_type in ['ngc38','ngc37']:
+                        ovFrac_list = ovFrac_list
+
+                    elif db_type in ['gnomad','ngclov']:
+                        ovFrac_list = ['0.7']
+
+                    for ovFrac in ovFrac_list:
+               
+                        ele_file = out_annotdb+"/"+ngc_id+".SV.edit.norm.annot."+\
+                                                            db_type.lower()+".bed.gz"
+                        overlap_cmd = ["python",overlapBin,"-i",ele_file,"-f",ngc_id,
+                                                "-t","overlap","-a",db_type.lower(),
+                                                          "-m",manifest,"-r",ovFrac,
+                                                                      '-x',xml_file
+                                      ]
+                        #print >>wh," ".join(overlap_cmd)
+                        out_svFile_tsv_gz = out_overlap+"/"+".".join([ngc_id,
+                                                             db_type.lower(),
+                                                                str(ovFrac)+\
+                                                     ".overlap.same.bed.gz"])
+                        
+                        cmd_list += ['echo \"'+' '.join(overlap_cmd)+'\"']
+                        out_tsv_gz_list.append(out_svFile_tsv_gz)
+                    
+                    print >>wh,"echo \"Overlap fraction used: "+','.join(ovFrac_list)+"\"\n" 
+                    print >>wh,'('+' ; '.join(cmd_list)+') | parallel -j15 --no-notice '
+                    
+                    for out_svFile_tsv_gz in out_tsv_gz_list:
+                        wh = self.checkErrorFile(out_svFile_tsv_gz,wh,"error",tmp_stat_file)
+
+                print >>wh,"echo \"End of Overlap and formatting step for db: "+\
+                                                                                db_type+"\"\n"
+                
+        print >>wh, "############## End of Overlap and Formatting Step ###############\n"
+            
+        print >>wh, "\n############ Begin of Merge and Formatting Step ###############\n"
+        print >>wh, "echo \"Start of Merge and Formatting step\"\n" 
+           
+        for ovFrac in ovFrac_list:
+            merge_cmd = ["python",mergeBin,'-i',rest_file,'-m',manifest,
+                            '-a',out_overlap,'-f',ngc_id,'-r',genome_ref, 
+                                                             '-o',ovFrac
+                        ] 
+            print >>wh," ".join(merge_cmd)
+        
+            out_svFile_tsv = os.path.dirname(out_overlap)+"/"+ngc_id+\
+                                        ".merged.all."+str(ovFrac)+".overlap.bed.gz"
+
+        
+            out_ovp_list.append(out_svFile_tsv)
+            wh = self.checkErrorFile(out_svFile_tsv,wh,"error",tmp_stat_file)
+        
+        print >>wh, "echo \"End of Merge and Formatting step\"\n" 
+
+        print >>wh, "\n############## End of Merge and Formatting Step ###############\n"
+
+        return out_ovp_list, wh
+
+    def checkErrorFile(self,out_file,wh,flag,status_file=[]):
+        
+        if_cmd = "\nif [ ! -e "+out_file+" ]; then \n"
+        if flag=="error":
+            echo_1 = "   echo -e \"ERROR: "+out_file+" doesnot exist\" \n"
+            echo_2 = "   echo \"0\" | cat > \""+status_file+"\"\n"
+            echo_3 = "   exit 1\n"
+            echo_4 = "   else\n"
+            echo_5 = "          echo \"1\" | cat > \""+status_file+"\""
+        end_cmd = "\nfi"
+        print >>wh,if_cmd+echo_1+echo_2+echo_3+echo_4+echo_5+end_cmd
+        print >>wh,"\n"
+        return wh
+
+    def writeSlurmEndStatus(self,tmp_stat_file,wh):
+
+        print >>wh,"echo \"2\" | cat > "+tmp_stat_file
+
+        return wh
+
+

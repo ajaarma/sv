@@ -113,7 +113,7 @@ class CONFIG:
         print 'Entered Work directory is: ',''.join(self.work_dir)
         print 'Entered family IDs file is: ',''.join(self.fam_file)
         print 'Entered Analysis genome build is: ',''.join(self.ref_built)
-        print 'Entered SV pipeline launch flag: ',''.join(self.launch_flag)
+        print 'Entered SV pipeline launch flag: ', self.launch_flag
 
         print "\n\n"
 

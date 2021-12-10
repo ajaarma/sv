@@ -106,7 +106,7 @@
 		  </grch38>
 		  <ci>True</ci>
 	  </ngc>
-	  <ngclov>
+  	  <ngclov>
 		  <annoFile>ngc/grch38/liftover37/NGC.samples.0based.b37.liftover.b38.sorted.bed.gz</annoFile>
 	  </ngclov>
 	
@@ -169,8 +169,8 @@
 		</grch38>
 	</decipher>
 
-	<user>
-		<promoter>
+	
+	<promoter>
 			<grch37>
 				<rawFile>user/promoter/grch37/Homo_sapiens.GRCh37.87.gtf.gz</rawFile>
 				<annoFile>user/promoter/grch37/user_grch37.0based.promoter.sorted.merged.bed.gz</annoFile>
@@ -179,8 +179,8 @@
 				<rawFile>user/promoter/grch38/Homo_sapiens.GRCh38.98.gtf.gz</rawFile>
 				<annoFile>user/promoter/grch38/user_grch38.0based.promoter.sorted.merged.bed.gz</annoFile>
 			</grch38>
-		</promoter>
-		<blacklist>
+	</promoter>
+	<blacklist>
 			<grch37>
 				<rawFile>user/blacklist/grch37/hg19_blacklist.bed.gz</rawFile>
 				<annoFile>user/blacklist/grch37/hg19_blacklist.sorted.bed.gz</annoFile>
@@ -189,8 +189,7 @@
 				<rawFile>user/blacklist/grch38/hg38_blacklist.bed.gz</rawFile>
 				<annoFile>user/blacklist/grch38/hg38_blacklist.sorted.bed.gz</annoFile>
 			</grch38>
-		</blacklist>
-	</user>
+	</blacklist>
 	
   	<annoDB>
 	  	<db>
@@ -202,7 +201,8 @@
 		  <value>ref_exon</value>
 		  <value>dbvar</value>
 		  <value>decipher</value>
-		  <value>user</value>
+		  <value>promoter</value>
+		  <value>blacklist</value>
 	  	</db>
   	</annoDB>
 		
@@ -247,7 +247,7 @@
 	  	<grch38>regions/PAR/hg38_PAR.txt</grch38>
   	</par>
   	<formatGT>
-		<flag>True</flag>
+		<flag>False</flag>
 		<scripts>formatGT.py</scripts>
 	</formatGT>
 

@@ -156,6 +156,135 @@ class dbSV:
         
         return out_line
         
+    def getFormatExampleTrioVariant(self,variant,ngc_id,famOvpFracFlag=False,
+                                                        queryInsOffset=0,
+                                                        queryBndOffset=0):
+
+        ''' Subroutine to process variants line in the VCF file. 
+        Extracts: Chromosme Num, Start-pos, End-pos, CIPOS,CIEND,Sample ID
+                  SV-Type, Genotype
+        '''
+
+        #Variant Information dictionary
+        varInfo = variant['info_dict']
+        
+        #Chromosome number
+        chr_num = str(variant['CHROM']);
+        
+        #Start Position
+        start_pos = int(variant['POS'])
+        if start_pos != 0:
+            start_pos = start_pos - 1
+        else:
+            start_pos = start_pos
+
+        #Extract variant END position
+        try:
+            end_pos = int(varInfo['END'][0])
+        except:
+            #end_pos = start_pos+1
+            end_pos = start_pos
+
+        # Caller type: Manta,Canvas or NC: No Caller
+        try:
+            # removes rs ids attached to SV callers
+            sv_caller = re.split("\;",variant['ID'])[0]
+        except:
+            sv_caller = "NC"
+
+        #Extract genotype information of the sample for given variant
+        try:
+            var_fmt = variant['FORMAT']
+            if re.search("GT",var_fmt):
+                gt_strs = re.split("\:",variant[ngc_id])
+                gt = gt_strs[0].strip()
+
+                if re.search("CN",var_fmt):
+                    #genoType = gt_strs[0]+":"+gt_strs[1]
+                    genoType = gt_strs[0]+":"+gt_strs[3]+":"+gt_strs[1]
+                else:
+                    genoType = gt_strs[0]+":"+"."+":"+gt_strs[1]
+            else:
+                gt_strs = re.split("\:",variant[ngc_id])
+                genoType = str(gt_strs[0])+":"+str(gt_strs[1])+":"+str(gt_strs[2])
+        except:
+            var_format = "NF"
+
+        # Assign uniform SV-type for Canvas calls: GAIN=> DUP; LOSS=>DEL; 
+        try:
+            sv_type = varInfo['SVTYPE'][0]
+            if re.search("GAIN",sv_caller):
+                sv_type = "DUP"
+            elif re.search("LOSS",sv_caller):
+                sv_type = "DEL"
+        except:
+           sv_type = "IMP"
+
+        # For illumina-vcf files; Some INS sv-types have same start & end position.
+        # Made such coordinates 1-based
+        if (sv_type == "INS" or sv_type == "BND") and (start_pos == end_pos):
+            end_pos = start_pos+1
+
+        # For  NGC/Example Trios samples add user declared offset to INS & BND start and end 
+        # points
+        if (sv_type == "INS"):
+            start_pos = start_pos - int(queryInsOffset)
+            end_pos = end_pos + int(queryInsOffset)
+
+        if (sv_type == "BND"):
+            start_pos = start_pos - int(queryBndOffset)
+            end_pos = end_pos + int(queryBndOffset)
+
+        
+        # Parsing CIPOS and CIEND; Confidence interval (Both Manta and Canvas calls)
+        ci_pos_list = []
+        ci_end_list = []
+
+        try:
+            ci_pos = varInfo['CIPOS']
+            for e in ci_pos:
+                if not re.search("\.",e):
+                    e = int(e)
+                    ci_pos_list.append(e)
+        except:
+            ci_pos_list=[0]
+
+        try:
+            ci_end = varInfo['CIEND']
+            for e in ci_end:
+                if not re.search("\.",e):
+                    e = int(e)
+                    ci_end_list.append(e)
+        except:
+            ci_end_list = [0]
+
+        # Adding CIPOS and CIEND to original start and end position.
+        # If start position is -ve (generally for MT coordinates) then assign as 0
+        
+        if famOvpFracFlag == True:
+            start_pos = start_pos
+            end_pos   = end_pos
+        else:
+            start_pos = start_pos+int(min(ci_pos_list))
+            end_pos = end_pos+int(max(ci_end_list))
+        
+        #For MT coordinates if start pos is < 0
+        if start_pos < 0:
+            print start_pos
+            start_pos = 0
+
+        # Combine all the information as: Chrom, Start, end, Information 
+        # field and filter out IMPRECISE SVs generally from the Canvas:REF IDs
+        
+        if sv_type != "IMP":
+            #print start_pos, end_pos, ci_pos_list, ci_end_list
+            out_line = [chr_num,str(start_pos),str(end_pos),ngc_id+"|"+sv_caller+\
+                                                         "|"+sv_type+"|"+genoType
+                       ]
+        else:
+            out_line = []
+        
+        return out_line
 
     def displayArguments(self,configDict,db_type,ref_genome,manifest_file,
                                 proj_date,lift_over_flag):
@@ -257,6 +386,45 @@ class dbSV:
                 self.getLiftOver_37to38(configDict,ngc_out_file,db_type,proj_date)
             print " -- Finished processing "+db_type,"\n"
         
+        elif db_type =="example":
+        
+            # family overlap flag (boolean). If TRUE then don't include CIPOS and CIEND for 
+            # adjusting start and end coordinates of input SV.
+            
+            print "Processing database: ",db_type
+            dbDict = configDict[db_type]
+            
+            # Naming output directory and output SV coordinates for NGC database.
+            if ref_genome=="grch37":
+                
+                ex_out_file = '/'.join([resource_path,dbDict[ref_genome]['annoFile']])
+                ex_basename = os.path.basename(ex_out_file)
+                ex_dirname = '/'.join([os.path.dirname(ex_out_file)])
+                os.system('mkdir -p '+ex_dirname)
+                ex_out_file = '/'.join([ex_dirname,ex_basename])
+
+            elif ref_genome=="grch38":
+                ex_out_file = '/'.join([resource_path,dbDict[ref_genome]['annoFile']])
+                ex_basename = os.path.basename(ex_out_file)
+                ex_dirname = '/'.join([os.path.dirname(ex_out_file)])
+                os.system('mkdir -p '+ex_dirname)
+                ex_out_file = '/'.join([ex_dirname,ex_basename])
+
+            print " -- The SV coordinates for NGC samples will be written to: "+ex_out_file
+            tmp_out_file = '/'.join([os.path.dirname(ex_out_file),'tmp.bed.gz'])
+            
+            # Processing the all the VCF files in the manifest to create NGC database
+            wh = open(tmp_out_file,"w")
+            wh = self.processExampleTrio(configDict,manifest_file,ex_dirname,wh)
+            wh.close()
+
+            # Sorting and merging the SV coordinates
+            print "\n"
+            print " -- Sorting by chromosome and coordinates"
+            self.getCoordSorted(tmp_out_file,ex_out_file,db_type)
+
+            print " -- Finished processing "+db_type,"\n"
+         
         elif db_type =="gnomad":
             
             dbDict = configDict[db_type]
@@ -773,6 +941,73 @@ class dbSV:
                     # Start parsing VCF file
                     for variant in my_parser:
                         out_list = self.getFormatNGCVariant(variant,ngc_id,ilm_id,
+                                                                    famOvpFracFlag,
+                                                                    queryInsOffset,
+                                                                    queryBndOffset
+                                                           )
+                        if out_list:
+                            print >>wh,"\t".join(out_list)
+                    
+                    # Removing the normalized vcf file
+                    os.system('rm '+vcf_file_norm_gz)
+                    os.system('rm '+vcf_file_norm_gz+'.csi')
+                    #sys.exit()
+
+        fh.close()
+
+        return wh
+
+    def processExampleTrio(self,configDict,manifest_file,out_dir,wh):
+        ''' Subroutine to process trio samples present in example manifest file'''
+      
+        
+        famOvpFracFlag = configDict['overlapMerge']['famOverlapFrac']
+        queryInsOffset = configDict['query']['offset']['ins']
+        queryBndOffset = configDict['query']['offset']['bnd']
+        bgzip = 'bgzip' #os.path.abspath(configDict['general']['samtools'])+'/bgzip'
+        bcftools = 'bcftools' #os.path.abspath(configDict['general']['samtools'])+'/bcftools'
+
+        # Processing each of the NGC family ids present in the manifest file
+        print manifest_file
+        fh = open(manifest_file)
+
+        count = 0
+        for lines in fh:
+            #Skip the header
+            count = count+1
+
+            if count >=2:
+                lines = lines.strip()
+                if re.search("^family_id",lines):
+                    pass
+                else:
+                    strs = lines.split("\t")
+                    ngc_id = strs[1].strip()
+                    vcf_file_strs = re.split(".vcf.gz",strs[10].strip())
+                    vcf_file_orig_gz = vcf_file_strs[0]+".vcf.gz"
+                    vcf_file_norm_gz = out_dir+'/'+\
+                                       os.path.basename(vcf_file_strs[0])+\
+                                       '.SV.norm.vcf.gz'
+
+                    # Normalizing SV-vcf file for splitting multi-allelic sites
+                    cmd_norm = bcftools+' norm -m - '+vcf_file_orig_gz+\
+                                    ' | '+bgzip+' -c > '+vcf_file_norm_gz
+
+                    cmd_norm_index = bcftools+' index '+vcf_file_norm_gz
+                  
+                    print cmd_norm
+                    os.system(cmd_norm)
+                    os.system(cmd_norm_index)
+                   
+                    # Processing NGC sample vcf file.
+                    print " -- Processing File: "+str(ngc_id)+" "+\
+                            os.path.basename(vcf_file_norm_gz)+" "+str(count-1)
+                    my_parser = VCFParser(infile=vcf_file_norm_gz,
+                                                split_variants=True,check_info=True)
+               
+                    # Start parsing VCF file
+                    for variant in my_parser:
+                        out_list = self.getFormatExampleTrioVariant(variant,ngc_id,
                                                                     famOvpFracFlag,
                                                                     queryInsOffset,
                                                                     queryBndOffset

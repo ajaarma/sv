@@ -41,7 +41,6 @@ if __name__=="__main__":
 
     # Create the temporary directories
     cmd_args = sys.argv
-    #cmd_args[0] = script_path+'/'+cmd_args[0]
     tmp_dict = objC.processInit(work_dir,sys.argv,proj_date)
     tmp_dir = tmp_dict['tmpDir']; tmp_bin = tmp_dict['tmpBin']; 
     tmp_data = tmp_dict['tmpData']
@@ -58,11 +57,12 @@ if __name__=="__main__":
     else:
         configDict['general']['geneomeBuild'] = genome_ref
 
+    ''' 
     # Printing the details of the configuration file for AnnotSV/vcfanno
     print " -- Parameters involved for Structural Variant Annotations using: "+anal_type+"\n"
     for keys in configDict[anal_type]:
         print "\t",keys,"\t",configDict[anal_type][keys]
-
+    ''' 
     print "\n"
 
     slurm_str = [anal_type]
@@ -81,11 +81,6 @@ if __name__=="__main__":
     objV = VCFANNO()
     configDict = objV.createTomlFile(configDict,genome_ref,tmp_dir)
 
-    #Copy Toml file <only for this analysis - need to be deleted>
-    #toml_cmd = 'cp '+work_dir+'/'+proj_date+'/vcfanno_bed.conf.38.USED.toml'+' '+\
-    #            work_dir+'/'+proj_date+'/vcfanno_bed.conf.38.toml'
-    #print toml_cmd
-    #sys.exit()
     # Processing for each family ID
     for fam_id in fh:
     #with open(fam_file) as fh:
@@ -102,7 +97,7 @@ if __name__=="__main__":
                 #print ngc_id,af_status,svcf,ilm_id
 
                 fam_ngc_dir = os.path.abspath(fam_dir+"/"+ngc_id)
-                os.system("mkdir -p "+fam_ngc_dir)
+                #os.system("mkdir -p "+fam_ngc_dir)
 
                 tmp_stat_file = tmp_status+"/"+ngc_id+".Job_status_"+slurm_str[0]+".txt"
                 slurm_file, swh = objS.getSlurmWriteHandle(tmp_bin,ngc_id+"."+slurm_str[0])
@@ -112,29 +107,35 @@ if __name__=="__main__":
                                                             sb_log,ngc_id,swh)
                 swh = objS.writeSlurmSpecific(swh)
                 #swh = objS.writeSlurmModule(configDict,swh)
+    
+                print >>swh, 'mkdir -p '+fam_ngc_dir
 
                 if anal_type=="annotsv":
                     fam_ngc_dir,ngc_list,swh = objS.writeSlurmAnnotSV(configDict,
                                                               famDict,tmp_data,
                                                               fam_id,ngc_id,
-                                                              tmp_stat_file,j,swh)
+                                                              tmp_stat_file,j,swh
+                                                                     )
                     
                     swh = objS.writeSlurmCombChrOut(configDict,fam_ngc_dir,ngc_id,
-                                                                tmp_stat_file,swh)
-                elif anal_type=="vcfanno":
+                                                                tmp_stat_file,swh
+                                                   )
+                elif anal_type=="vcfanno_ngc":
                                         
                     #Step-1: Write VCFAnno related command in Slurm
                     out_svFile,swh = objS.writeSlurmVcfanno(manifest,configDict,
                                                            famDict, fam_ngc_dir,
                                                            fam_id, ngc_id, svcf,
                                                           ilm_id, tmp_stat_file,
-                                                     script_path,genome_ref,swh)
+                                                     script_path,genome_ref,swh
+                                                           )
 
                     #Step-2: Extract relevant fields related to annotation sources
                     out_overlap,swh = objS.writeSlurmExtractFields(configDict,
                                                        manifest,ngc_id,fam_id,
                                                      out_svFile,tmp_stat_file,
-                                                               genome_ref,swh)
+                                                               genome_ref,swh
+                                                                  )
                     '''
                     out_overlap = os.path.abspath(fam_ngc_dir)+'/annoDB'
                     ''' 
@@ -142,7 +143,8 @@ if __name__=="__main__":
                     out_ovp_mrg_list,swh = objS.writeSlurmOverlapMerge(configDict,
                                                            manifest,ngc_id,fam_id,
                                                            xml_file,out_overlap,
-                                                    tmp_stat_file,genome_ref,swh)
+                                                    tmp_stat_file,genome_ref,swh
+                                                                      )
 
                     #Optional: sub-step 3; Format GT if they are missing specially
                     # for Canvas related calls
@@ -150,11 +152,57 @@ if __name__=="__main__":
                         out_ovp_mrg_list,swh = objS.writeSlurmFormatGT(configDict,
                                                     manifest,fam_id,out_ovp_mrg_list,
                                                                  tmp_stat_file,swh
+                                                                      
                                                                       )
                     #Step-4: Family filtering 
                     swh = objS.writeSlurmFamFilter(configDict,manifest,ngc_id,
                                                       fam_id,out_ovp_mrg_list,
-                                                      fam_ngc_dir,tmp_stat_file,swh)
+                                                      fam_ngc_dir,tmp_stat_file,swh
+                                                  )
+                
+                elif anal_type=='vcfanno_demo':
+                    objD = DEMO()
+                    print 'here'
+                    #Step-1: Write VCFAnno related command in Slurm
+                    out_svFile,swh = objD.writeDemoVcfanno(manifest,configDict,
+                                                           famDict, fam_ngc_dir,
+                                                           fam_id, ngc_id, svcf,
+                                                          ilm_id, tmp_stat_file,
+                                                     script_path,genome_ref,swh
+                                                           )
+
+                    #Step-2: Extract relevant fields related to annotation sources
+                    out_overlap,swh = objD.writeDemoExtractFields(configDict,
+                                                       manifest,ngc_id,fam_id,
+                                                     out_svFile,tmp_stat_file,
+                                                               genome_ref,swh
+                                                                  )
+                    '''
+                    out_overlap = os.path.abspath(fam_ngc_dir)+'/annoDB'
+                    ''' 
+                    #Step-3: Overlap percentage merging
+                    out_ovp_mrg_list,swh = objD.writeDemoOverlapMerge(configDict,
+                                                           manifest,ngc_id,fam_id,
+                                                           xml_file,out_overlap,
+                                                    tmp_stat_file,genome_ref,swh
+                                                                      )
+
+                    ''' 
+                    #Optional: sub-step 3; Format GT if they are missing specially
+                    # for Canvas related calls
+                    if configDict['formatGT']['flag']=='True':
+                        out_ovp_mrg_list,swh = objD.writeDemoFormatGT(configDict,
+                                                    manifest,fam_id,out_ovp_mrg_list,
+                                                                 tmp_stat_file,swh
+                                                                      
+                                                                      )
+                    #Step-4: Family filtering 
+                    swh = objD.writeDemoFamFilter(configDict,manifest,ngc_id,
+                                                      fam_id,out_ovp_mrg_list,
+                                                      fam_ngc_dir,tmp_stat_file,swh
+                                                  )
+ 
+                    '''
 
                 swh.close()
                 if launch_flag:

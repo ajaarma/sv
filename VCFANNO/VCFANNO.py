@@ -1375,7 +1375,9 @@ class VCFANNO:
                                   ])
                 print >>wh,"file=\""+values+"\""
             else:
-                values = '/'.join([configDict[db_type][ref_genome]['annoFile']])
+                values = '/'.join([resource_path,
+                                   configDict[db_type][ref_genome]['annoFile']
+                                  ])
                 print >>wh,"file=\""+values+"\""
 
             print >>wh,"names=[\""+db_type+"_s\",\""+db_type+"_e\",\""+db_type+"_ov_id\"]"

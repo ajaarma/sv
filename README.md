@@ -24,6 +24,7 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 	$ conda install -c bioconda vcfanno
 	$ pip install xmltodict
 	$ pip install dicttoxml
+	$ pip install numpy
 	$ conda install numpy
 	$ conda install -c bioconda ucsc-liftover
 	$ pip install vcf_parser
@@ -134,7 +135,7 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 		- Download: http://ftp.ensembl.org/pub/grch37/release-98/gtf/homo_sapiens/Homo_sapiens.GRCh37.87.gtf.gz
 		- Put it here: <resource-path>/user/promoter/grch37/
 		- Example command:
-		$ python processDB.py -a CONFIG/Analysis_user.grch37.xml -d user_promoter
+		$ python processDB.py -a CONFIG/Analysis_user.grch37.xml -d promoter
 				      -l false -m NA -p NA
 	
 		
@@ -142,7 +143,7 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 		- Download: http://mitra.stanford.edu/kundaje/akundaje/release/blacklists/hg19-human/wgEncodeHg19ConsensusSignalArtifactRegions.bed.gz
 		- Put it here: <resource-path>/user/blacklist/grch37/
 		- Example command:
-		$ python processDB.py -a CONFIG/Analysis_user.grch37.xml -d user_blacklist
+		$ python processDB.py -a CONFIG/Analysis_user.grch37.xml -d blacklist
 				      -l false -m NA -p NA
 	 
 		
