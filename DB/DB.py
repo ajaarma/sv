@@ -755,8 +755,8 @@ class dbSV:
         os.system('sort -k1,1V -k2,2n -k3,3n '+tmp_merge_file+' |bgzip -c > '+sort_file)
         time.sleep(5.5)
         os.system('tabix -p bed '+sort_file)
-        #os.system('rm '+tmp_merge_file)
-        #os.system('rm '+tmp_file)
+        os.system('rm '+tmp_merge_file)
+        os.system('rm '+tmp_file)
         #return outFile_s_all,outFile_sm_all
 
     def mergeDupCoordBed(self,inp_file,wh,db_type=[],ens_type=[]):

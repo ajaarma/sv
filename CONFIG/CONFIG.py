@@ -28,6 +28,7 @@ class CONFIG:
     def str2bool(self,v):
         ''' Utility function to convert string/unicode objects ('yes','true','t','1')
             of boolean type (True/False) '''
+        print v
         v = v[0]        
         return v.lower() in ('yes','true','t','1')
 
@@ -244,12 +245,12 @@ class CONFIG:
                     'project':self.proj_date}
 
         print "\n\n"
-        print 'Entered Manifest file is: ',''.join(self.m_file)
+        print 'Entered Manifest file is: ',self.m_file
         print 'Entered Analysis file is: ',''.join(self.xml_file)
-        print 'Entered Project date  is: ',''.join(self.proj_date)
+        print 'Entered Project date  is: ',self.proj_date
         print 'Entered database is: ',''.join(self.db_name)
         print 'Entered refernce genome: ',''.join(self.ref_file)
-        print 'Entered lift over flag is: ',self.lov_flag
+        print 'Entered lift over flag is: ',type(self.lov_flag)
         print "\n\n" 
 
         return cmd_dict

@@ -1,14 +1,14 @@
 # SV pipeline
 
-Structural variant (SV) calling pipeline explicity developed to process individual or trio vcf files containing SVs aligned to either (grch37/grch38).
+Structural variant (SV) calling pipeline explicity developed to process individual or trio vcf files containing SV classes (DEL/DUP/INS/INV/CNVs) aligned to either grch37/grch38 version of reference genome.
 
-The pipeline requires annotation sources, customized datasets, available tools (vcfanno) and input set of SVs in vcf format. It generates analysis scripts that can be incorporated into any high performance clusters (HPC). This results in list of filtered variants per family that can be used for interpretation, reporting and downstream analysis/
+The pipeline requires annotation sources, customized datasets, available tools (vcfanno,bcftools) and input set of SVs in vcf format. It generates analysis scripts that can be incorporated into any high performance clusters (HPC). This results in list of filtered variants per family that can be used for interpretation, reporting and downstream analysis/
 
 For demonstration purpose below example is presented for GRCh37. However, the same can be replicated for GRCh38.
 
 # Installation
 	git clone https://github.com/ajaarma/sv.git
-	
+
 #
 # Required installation packages
 #
@@ -46,7 +46,8 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 #
 
 ##### Building up of Annotation sources ############
-	* Annotation of SVs in this pipeline is done by vcfanno tool[Reference]. 
+	
+	* Annotation of SVs in this pipeline is done by vcfanno tool [Brent et.al 2016]. 
 	  This requires annotation sources to be processed in specific tab separated format. 
 	  The format is defined as:
 		#Chrom	#Start-Pos	#End Position	#SV-IDs,Other information
@@ -75,6 +76,7 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 				      -l <lift-over-flag>
 				      -m <manifest-file-internal-cohort-NGC>
 				      -p <project-name>
+
 	With this release we are providing all the respective annotation sources downloaded and processed for both GRCh37 and GRCh38 version. These can be found in respective folder 
 		demo/resources/ folder.
 
@@ -85,10 +87,10 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 		- Run the command:
 		
 		$ python processDB.py -a CONFIG/Analysis.xml -d gnomad 
-				      -r grch37 -l True -m NA -p NA
+				      -r grch37 -l True 
 		Choose liftover flag to True for lifting over to GRCh38 version
 		$ python processDB.py -a CONFIG/Analysis.xml -d gnomad 
-				      -r grch37 -l True -m NA -p NA
+				      -r grch37 -l True
 
 	* Processing NGC samples (Internal Cohort)
 		- The sample vcfs have not been provided with this repo. But can be replicated for any other  internal cohort.
@@ -194,14 +196,14 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 		
 After creating the annotation source the input vcf files can be annotated using following command. It generates shell scripts. Generally for large cohort analysis it can be integrated into any HPC services such as SLURM/LSF/PBS. For a given trio family, the pipeline annoates the input SVs of proband and the mMain steps are:
 
-	(1) Normalizing vcfs for multi-allelic sites
+	(1) Normalizing vcfs for multi-allelic sites.
 	(2) Annotation using Vcfanno by incorporating above databases.
-	(3) Extract relevant fields splitted per annotation source  (using bcftools)
+	(3) Extract relevant fields of annotation splitted per annotation source  (using bcftools).
 	(4) Compute overlap of query SVs with annotation source:
 		- Reciprocal overlap (default 70%) with gnomAD, Internal cohort(such as NGC)
 		- Single base overlap with Ensembl, Refseq, Decipher, dbVar, promoter, blacklist regions.
 	(5) Merge all the extracted fields
-	(6) Incorporate the frequency and inheritance filtering
+	(6) Incorporate the frequency and inheritance filtering on the anntated SVs.
 
 N.B: Current implementation steps of the pipeline (step 1-6) has been optimized for NGC project WGS samples. However for demonstration purpose we provide example scripts that were used to annotate 1000 genome example trio SVs. See demo/examples/samples/ directory
 

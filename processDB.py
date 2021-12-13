@@ -40,7 +40,7 @@ if __name__=="__main__":
     xml_file = cmd_dict['analysis']
     ref_genome = cmd_dict['ref'];db_name = cmd_dict['db']
     try:
-        lift_ov_flag = cmd_dict['lov'][0]
+        lift_ov_flag = cmd_dict['lov']
     except:
         lift_ov_flag = None
     try:
