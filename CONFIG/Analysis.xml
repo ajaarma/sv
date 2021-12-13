@@ -164,7 +164,7 @@
 			<annoFile>decipher/grch37/decipher.grch37.0based.merged.sorted.bed.gz</annoFile>
 		</grch37>
 		<grch38>
-			<rawFile>decipher/grch38/decipher_cnv_syndromes_liftover38.bed</rawFile>
+			<rawFile>decipher/grch38/decipher_cnv_syndromes_liftover.b38.bed</rawFile>
 		  	<annoFile>decipher/grch38/decipher.grch38.0based.merged.sorted.bed.gz</annoFile>
 		</grch38>
 	</decipher>

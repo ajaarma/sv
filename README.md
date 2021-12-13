@@ -139,7 +139,7 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 			- For exonic regions: ±50 bp either ends.
 
 	* Processing Decipher
-		- Compilation source: https://www.deciphergenomics.org/
+		- Compilation source: https://www.deciphergenomics.org/disorders/syndromes/list
 		- Provided default with this repo directory: <resource-dir>/demo/resources/decipher/grch37/decipher_cnv_syndromes.bed
 		and <resource-path>/demo/resources/decipher/grch38/decipher_cnv_syndromes_liftover.b38.bed
 
