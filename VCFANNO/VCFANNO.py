@@ -1332,7 +1332,7 @@ class VCFANNO:
             wh = open(toml_out,'w')
 
         elif re.search('38',ref_genome):
-            annoDBList.insert(2,'ngclov')
+            #annoDBList.insert(2,'ngclov')
             toml_out = tmp_dir+'/'+configDict['vcfanno']['toml38']
             wh = open(toml_out,'w')
 
@@ -1348,15 +1348,17 @@ class VCFANNO:
                 values = '/'.join([resource_path,
                                    configDict[db_type][ref_genome]['annoFile']
                                   ])
-                ngc_dir = os.path.dirname(values)
-                ngc_basename = os.path.basename(values)
+                #ngc_dir = os.path.dirname(values)
+                #ngc_basename = os.path.basename(values)
 
+                ''' 
                 if ngc_db_date:
                     proj_date = ngc_db_date
                 else:
                     proj_date = self.getLatestNGCDbDate(ngc_dir)
-               
-                values = '/'.join([ngc_dir,proj_date,ngc_basename])
+                '''
+
+                #values = '/'.join([ngc_dir,proj_date,ngc_basename])
                 if re.search('37',ref_genome):
                     db_type = 'ngc37'
                 elif re.search('38',ref_genome):

@@ -40,10 +40,10 @@ class SLURM:
         if len(chr_num)!=0:
             #print "inside here "
             #print slurm_name
-            slurm_file = bin_dir+"/"+slurm_name+"_chr"+chr_num+".slurm"
+            slurm_file = bin_dir+"/"+slurm_name+"_chr"+chr_num+".sh"
             wh = open(slurm_file,"w")
         else:
-            slurm_file = os.path.abspath(bin_dir+"/"+slurm_name+".slurm")
+            slurm_file = os.path.abspath(bin_dir+"/"+slurm_name+".sh")
             wh = open(slurm_file,"w")
 
         return slurm_file, wh

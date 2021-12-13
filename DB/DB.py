@@ -544,32 +544,61 @@ class dbSV:
             
             print " -- Finished processing: ",db_type,"\n"
 
-        elif db_type=='user':
+        elif db_type=='promoter':
 
             # Retrieve the configuration files for User sepcific annotation source
             dbDict = configDict[db_type]
             resource_path = os.path.abspath(
                                     configDict['general']['resourceDir']
                                 )
-            user_file = '/'.join([resource_path,
+            prm_file = '/'.join([resource_path,
                                   dbDict[ref_genome]['rawFile']
                                  ])
-            user_out_file = '/'.join([resource_path,
+            prm_out_file = '/'.join([resource_path,
                                       dbDict[ref_genome]['annoFile']
                                      ])
-            db_tag = dbDict['tag']
+            db_tag = 'promoter'
 
-            print " -- Entered User provided annotation file is: ",user_file,'\n'
-            out_dir = os.path.dirname(user_file)
+            print " -- Entered User provided annotation file is: ",prm_file,'\n'
+            out_dir = os.path.dirname(prm_file)
             tmp_out_file = '/'.join([out_dir,'tmp.bed'])
 
-            print " -- Processing the raw annotation file is: ",user_file,'\n'
+            print " -- Processing the raw annotation file is: ",prm_file,'\n'
             wh = open(tmp_out_file,'w')
-            wh = self.processUSER(user_file,wh)
+            wh = self.processPROMOTER(prm_file,wh)
             wh.close()
 
             print " -- Sorting by chromosome and coordinates"
-            self.getCoordSorted(tmp_out_file,user_out_file,db_type,db_tag)
+            self.getCoordSorted(tmp_out_file,prm_out_file,db_type,db_tag)
+
+            print " -- Finished processing: ",db_type,'\n'
+
+        elif db_type=='blacklist':
+
+            # Retrieve the configuration files for User sepcific annotation source
+            dbDict = configDict[db_type]
+            resource_path = os.path.abspath(
+                                    configDict['general']['resourceDir']
+                                )
+            bl_file = '/'.join([resource_path,
+                                  dbDict[ref_genome]['rawFile']
+                                 ])
+            bl_out_file = '/'.join([resource_path,
+                                      dbDict[ref_genome]['annoFile']
+                                     ])
+            db_tag = []
+
+            print " -- Entered User provided annotation file is: ",bl_file,'\n'
+            out_dir = os.path.dirname(bl_file)
+            tmp_out_file = '/'.join([out_dir,'tmp.bed'])
+
+            print " -- Processing the raw annotation file is: ",bl_file,'\n'
+            wh = open(tmp_out_file,'w')
+            wh = self.processBLACKLIST(bl_file,wh)
+            wh.close()
+
+            print " -- Sorting by chromosome and coordinates"
+            self.getCoordSorted(tmp_out_file,bl_out_file,db_type,db_tag)
 
             print " -- Finished processing: ",db_type,'\n'
 
@@ -581,7 +610,7 @@ class dbSV:
     #                        #
     ##########################
 
-    def processUSER(self,user_file,wh):
+    def processPROMOTER(self,user_file,wh):
         
         ''' Subroutine to process the USER provided customized annotation
         source: promoter regions '''
@@ -620,6 +649,28 @@ class dbSV:
 
         return wh
 
+    def processBLACKLIST(self,bl_file,wh):
+        ''' Subroutine to process BLACKLIST regions '''
+
+        if re.search('.gz',bl_file):
+            fh = gzip.open(bl_file)
+        else:
+            fh = open(bl_file)
+
+        for lines in fh:
+            lines = lines.strip()
+            strs = re.split('\t',lines)
+            strs = [x.strip() for x in strs]
+            if len(strs)>3:
+                    strs = strs[0:4]
+            elif len(strs)==3:
+                    strs.insert(3,'BL')
+
+            print >>wh,'\t'.join(strs)
+
+        fh.close()
+
+        return wh
 
     def processDECIPHER(self,inp_file,wh):
 
@@ -738,7 +789,7 @@ class dbSV:
             coords = re.split("\+",keys)
             vals = bed_hash[keys]
         
-            if db_type == 'user' and ens_type == 'promoter':
+            if db_type == 'promoter' and ens_type == 'promoter':
                 
                 ensg_gene = []
                 hgnc_gene = []

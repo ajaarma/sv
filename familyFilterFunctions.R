@@ -1,9 +1,3 @@
-#loc3_5 = "/home/aak64/R/x86_64-pc-linux-gnu-library/3.5/"
-
-#require("data.table",lib=loc3_5)
-#require("plyr",lib=loc3_5)
-#require("future.apply",lib=loc3_5)
-
 require("data.table")
 require("plyr")
 require("future.apply")

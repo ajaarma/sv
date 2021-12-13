@@ -101,13 +101,16 @@ if __name__=="__main__":
 
                 tmp_stat_file = tmp_status+"/"+ngc_id+".Job_status_"+slurm_str[0]+".txt"
                 slurm_file, swh = objS.getSlurmWriteHandle(tmp_bin,ngc_id+"."+slurm_str[0])
+
+                #SLURM specific parameters
+
                 swh = objS.writeSlurmTop(configDict,swh)
-                
+               
                 script_out, script_err, swh = objS.writeSlurmInit(configDict,
                                                             sb_log,ngc_id,swh)
-                swh = objS.writeSlurmSpecific(swh)
+                #swh = objS.writeSlurmSpecific(swh)
                 #swh = objS.writeSlurmModule(configDict,swh)
-    
+
                 print >>swh, 'mkdir -p '+fam_ngc_dir
 
                 if anal_type=="annotsv":
