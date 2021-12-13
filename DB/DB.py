@@ -392,6 +392,7 @@ class dbSV:
             # adjusting start and end coordinates of input SV.
             
             print "Processing database: ",db_type
+            db_type = 'ngc'
             dbDict = configDict[db_type]
             
             # Naming output directory and output SV coordinates for NGC database.

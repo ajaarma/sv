@@ -220,8 +220,8 @@
   	</ensembl>
 
   	<refseq>
-	  	<grch37>refseq/grch37/20201026/GRCh37_latest_genomic.chr.gtf.gz</grch37>
-		<grch38>refseq/grch38/20210518/GRCh38_latest_genomic.chr.gtf.gz</grch38>
+	  	<grch37>refseq/grch37/GRCh37_latest_genomic.gtf.gz</grch37>
+		<grch38>refseq/grch38/GRCh38_latest_genomic.gtf.gz</grch38>
 	  	<refType>
 		  	<offset> 
 				<gene>1000</gene> 

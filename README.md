@@ -98,9 +98,9 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 			demo/examples/manifest.txt
 		
 		- Example command:
-		$ python processDB.py -a CONFIG/Analysis.xml -d ngc
+		$ python processDB.py -a CONFIG/Analysis.xml -d example
 				      -r grch38 -l false -m <resource-path>/demo/examples/manifest.txt
-				      -p NA
+				      
 	
 	* Processing Ensembl
 		- Download file: (grch37) http://ftp.ensembl.org/pub/grch37/release-98/gtf/homo_sapiens/Homo_sapiens.GRCh37.87.gtf.gz
@@ -108,8 +108,10 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 		- Download file: (grch38) http://ftp.ensembl.org/pub/release-98/gtf/homo_sapiens/Homo_sapiens.GRCh38.98.gtf.gz
 		- Put these files in respective grch37/grch38 directory: <resource-path>/demo/resources/ensembl/grch38/
 		- Example run for grch38 version:
-		$ python processDB.py -a CONFIG/Analysis.xml -r grch38 -d ensembl 
-				      -l false -m NA -p NA
+		$ python processDB.py -a CONFIG/Analysis.xml -r grch38 -d ensembl -l false 
+		$ Offset
+			- For transcript regions: ±1000 bp either ends.
+			- For exonic regions: ±50 bp either ends.
 
 	* Processing RefSeq
 		- Standardizing the raw Refseq gene file by mapping the GenBank-Accn to Chromosome number 
@@ -130,8 +132,11 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 			-a <resource-path>/refseq/grch38/GRCh38_latest_assembly_report.txt
 		
 		- Example command to create the database:
-		$ python processDB.py -a CONFIG/Analysis.xml -d refseq
-				      -r grch38 -l false -m NA -p NA
+		$ python processDB.py -a CONFIG/Analysis.xml -d refseq -r grch38 -l false
+
+		$ Offset
+			- For transcript regions: ±1000 bp either ends.
+			- For exonic regions: ±50 bp either ends.
 
 	* Processing Decipher
 		- Compilation source: https://www.deciphergenomics.org/
@@ -140,8 +145,7 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 
 		- Example run for grch38 version:
 		
-		$ python processDB.py -a CONFIG/Analysis.xml -d decipher
-				      -r grch38 -l false -m NA -p NA
+		$ python processDB.py -a CONFIG/Analysis.xml -d decipher -r grch38 -l false
 	
 	* Processing dbVar
 		- Download these files (grch37):
@@ -157,8 +161,7 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 		- Put these files in: <resource-path>/demo/resources/dbvar/grch38/
 		- Example run of the command for grch38 version:
 		
-		$ python processDB.py -a CONFIG/Analysis.xml -d dbvar
-				      -r grch38 -l false -m NA -p NA
+		$ python processDB.py -a CONFIG/Analysis.xml -d dbvar -r grch38 -l false
 	
 	* Processing  specific databases:
 		- Promoter regions (Ensembl)
@@ -170,8 +173,7 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 		
 		- Example command for running grch38 version:
 		
-		$ python processDB.py -a CONFIG/Analysis.xml -d promoter
-				      -r grch38 -l false -m NA -p NA
+		$ python processDB.py -a CONFIG/Analysis.xml -d promoter -r grch38 -l false
 	
 		
 		- Blacklist regions
@@ -183,9 +185,8 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 		
 		- Example command for processing grch38 version:
 		
-		$ python processDB.py -a CONFIG/Analysis.xml -d blacklist
-				      -r grch38 -l false -m NA -p NA
-	 
+		$ python processDB.py -a CONFIG/Analysis.xml -d blacklist -r grch38 -l false
+	
 		
 		
 #
