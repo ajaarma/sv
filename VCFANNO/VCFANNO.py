@@ -24,7 +24,11 @@ class VCFANNO:
         
         # Computes only the % of query overlap
         #db_ov = float(diff)/float(db_end - db_start+1) # deafult
-        db_ov = float(diff)/float(db_end - db_start)    # O-based 
+        try:
+            db_ov = float(diff)/float(db_end - db_start)    # O-based 
+        except:
+            db_ov = float(diff)/float(db_end - db_start+1)    # O-based 
+        
         query_ov = round(query_ov,3)
         db_ov = round(db_ov,3)
 
@@ -44,7 +48,7 @@ class VCFANNO:
             except ValueError:
                 break
 
-            print "ALL: ",st_pos,en_pos,dbs,dbe #query_ov,db_ov #,db_info_list[i]
+            #print "ALL: ",st_pos,en_pos,dbs,dbe #query_ov,db_ov #,db_info_list[i]
             query_ov,db_ov = self.query_db_overlap(st_pos,en_pos,dbs,dbe)
 
             #if debug_flag:
@@ -153,7 +157,7 @@ class VCFANNO:
         #if db_type.lower() in ["gnomad","ngc38","ngclov","dbvar","ensembl",
         if db_type.lower() in ['gnomad','ngc38','ngclov','ngc37','dbvar',
                                'ens_trans','ens_exon','ref_gene','ref_exon',
-                                                         'decipher','user']:
+                                          'decipher','promoter','blacklist']:
             i = 3
             li = i+3
             ri = li+3
@@ -510,13 +514,15 @@ class VCFANNO:
     def getUserAnnoOverlap(self,configDict,db_ovp_list,db_type):
 
         ''' Subroutine to process User defined annotation source. Current 
-            implementation is suited for any overlap to promoter region
+            implementation is suited for any overlap to promoter region or 
+            ENCODE's blacklist regions
         '''
         out_list = []
         db_tag = configDict[db_type]['tag']
         db_tag_type = '_'.join([db_type,db_tag])
 
         prom_flag = []
+        bl_flag = []
         db_ovp_list = [x.strip() for x in db_ovp_list if x !='NA']
         
 
@@ -555,8 +561,21 @@ class VCFANNO:
                 prom_flag = 'TRUE'
             else:
                 prom_flag = 'FALSE'
-
+            
             out_list = [out_list,prom_flag]
+        
+        elif re.search('blacklist',db_tag_type):
+            bl_list = []
+
+            if len(db_ovp_list)>=1:
+                for ovp_id in db_ovp_list:
+                    bl_list.append(ovp_id)
+                out_list = ''.join(list(set(bl_list)))
+                bl_flag='TRUE'
+            else:
+                out_list = 'NA'
+                bl_flag='FALSE'
+            out_list = [out_list,bl_flag]
             
             return out_list
 
@@ -900,7 +919,7 @@ class VCFANNO:
         ''' Method to execute task of finding overlaps w.r.t annotation 
             sources 
         '''
-       
+        
         fam_id_list = []
         fam_base_id = re.split("_",ngc_id)[0]
         ngc_fam_list = famDict[fam_base_id]['ngc_id']
@@ -1200,6 +1219,7 @@ class VCFANNO:
                     out_str = self.getUserAnnoOverlap(configDict,db_merge_m,
                                                                     db_type
                                                      )
+                    
                     out_cmd = [str(lineCount),sv_id,'\t'.join(out_str)]
                     print >>wh,'\t'.join(out_cmd)
 
@@ -1249,9 +1269,18 @@ class VCFANNO:
         lineCount = 0
         
         # Read the file names for Curated gene-list and HPO-genelist
-        curated_gene_file = configDict['ensembl']['ensVarAnnot']['g'] 
-        hpo_gene_file = configDict['ensembl']['ensVarAnnot']['d'] 
-        imp_gene_file = configDict['imprint']
+        resource_dir = configDict['general']['resourceDir']
+        curated_gene_file = '/'.join([resource_dir,
+                                      configDict['ensembl']['ensVarAnnot']['g'] 
+                                     ])
+
+        hpo_gene_file = '/'.join([resource_dir,
+                                  configDict['ensembl']['ensVarAnnot']['d'] 
+                                 ])
+        imp_gene_file = '/'.join([resource_dir,
+                                  configDict['imprint']
+                                 ])
+
 
 
         # Process the files and store in the genes
@@ -1265,13 +1294,21 @@ class VCFANNO:
             curated_gene_dict[lines.upper()] = 1
         fh.close()
 
-        fh = open(hpo_gene_file)
+        if re.search('gz$',hpo_gene_file):
+            fh = gzip.open(hpo_gene_file)
+        else:
+            fh = open(hpo_gene_file)
+
         for lines in fh:
             lines = lines.strip()
             if not re.search('\#',lines):
                 strs = re.split('\t',lines)
-                hpo_gene = strs[3].strip()
-                hpo_gene_dict[hpo_gene.upper()] = 1
+                try:
+                    hpo_gene = strs[3].strip()
+                    hpo_gene_dict[hpo_gene.upper()] = 1
+                except:
+                    pass
+
         fh.close()
 
         ##### Dict: Imprinted genes ##############

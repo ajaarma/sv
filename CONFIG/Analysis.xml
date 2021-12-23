@@ -183,6 +183,7 @@
 				<rawFile>promoter/grch38/Homo_sapiens.GRCh38.98.gtf.gz</rawFile>
 				<annoFile>promoter/grch38/promoter_grch38.0based.promoter.merged.sorted.bed.gz</annoFile>
 			</grch38>
+			<tag>ensembl</tag>
 	</promoter>
 	<blacklist>
 			<grch37>
@@ -193,6 +194,7 @@
 				<rawFile>blacklist/grch38/hg38_blacklist.bed.gz</rawFile>
 				<annoFile>blacklist/grch38/hg38_blacklist.merged.sorted.bed.gz</annoFile>
 			</grch38>
+			<tag>encode</tag>
 	</blacklist>
 	
   	<annoDB>
@@ -220,7 +222,11 @@
 			  	<exons>50</exons>
 			  <!-- <exons>0</exons> -->
 		  	</offset>
-	  	</ensType>
+		</ensType>
+		<ensVarAnnot>
+			<g>curated/NGC_genelist_allNamesOnly-20200519.txt</g>
+			<d>curated/phenotype_to_genes.tar.gz</d>
+		</ensVarAnnot>
   	</ensembl>
 
   	<refseq>
@@ -255,7 +261,7 @@
 		<scripts>formatGT.py</scripts>
 	</formatGT>
 
-	<imprint>curated/imprinted_genes_CNV_20200424.txt</imprint>
+	<imprint>curated/imprinted_genes_20200424.txt</imprint>
   
   	<famFilter>
 	  	<famBin>familyFiltering.R</famBin>
