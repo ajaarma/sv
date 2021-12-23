@@ -127,20 +127,24 @@
 		  </grch38>
 	  </ens_exon>
 	  <ref_gene>
-		<grch37>
+		  <grch37>
+			<rawFile>refseq/grch37/GRCh37_latest_genomic_map.gtf.gz </rawFile>
 			<annoFile>refseq/grch37/refseq_grch37.gene.1000.merged.sorted.bed.gz</annoFile>
   		</grch37>
 		<grch38>
+			<rawFile>refseq/grch378/GRCh38_latest_genomic_map.gtf.gz </rawFile>
 			<annoFile>refseq/grch38/refseq_grch38.gene.1000.merged.sorted.bed.gz</annoFile>
 		</grch38>
 	  </ref_gene>
 
 	  <ref_exon>
 		  <grch37>
-			  <annoFile>refseq/grch37/refseq_grch37.exons.50.merged.sorted.bed.gz</annoFile>
+			<rawFile>refseq/grch37/GRCh37_latest_genomic_map.gtf.gz </rawFile>
+			<annoFile>refseq/grch37/refseq_grch37.exons.50.merged.sorted.bed.gz</annoFile>
 		  </grch37>
 		  <grch38>
-			  <annoFile>refseq/grch38/refseq_grch38.exons.50.merged.sorted.bed.gz</annoFile>
+			<rawFile>refseq/grch378/GRCh38_latest_genomic_map.gtf.gz </rawFile>
+			<annoFile>refseq/grch38/refseq_grch38.exons.50.merged.sorted.bed.gz</annoFile>
 		  </grch38>
 	  </ref_exon>
 	  
@@ -220,8 +224,8 @@
   	</ensembl>
 
   	<refseq>
-	  	<grch37>refseq/grch37/GRCh37_latest_genomic.gtf.gz</grch37>
-		<grch38>refseq/grch38/GRCh38_latest_genomic.gtf.gz</grch38>
+	  	<grch37>refseq/grch37/GRCh37_latest_genomic_map.gtf.gz</grch37>
+		<grch38>refseq/grch38/GRCh38_latest_genomic_map.gtf.gz</grch38>
 	  	<refType>
 		  	<offset> 
 				<gene>1000</gene> 

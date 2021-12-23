@@ -130,6 +130,7 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 		$ python convertRefSeqAccession.py 
 			-i <resource-path>/refseq/grch38/GRCh38_latest_genomic.gtf.gz 
 			-a <resource-path>/refseq/grch38/GRCh38_latest_assembly_report.txt
+			-o <resource-path>/refseq/grch38/GRCh38_latest_genomic.map.gtf.gz
 		
 		- Example command to create the database:
 		$ python processDB.py -a CONFIG/Analysis.xml -d refseq -r grch38 -l false

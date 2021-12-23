@@ -250,7 +250,7 @@ class CONFIG:
         print 'Entered Project date  is: ',self.proj_date
         print 'Entered database is: ',''.join(self.db_name)
         print 'Entered refernce genome: ',''.join(self.ref_file)
-        print 'Entered lift over flag is: ',type(self.lov_flag)
+        print 'Entered lift over flag is: ',self.lov_flag
         print "\n\n" 
 
         return cmd_dict
