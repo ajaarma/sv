@@ -1006,7 +1006,7 @@ class VCFANNO:
                         print fam_merge_m_same
                         sys.exit()
                     ############################################################ 
-                    ''' 
+                     
                     # Compute SV internal family overlap
                     # Internal family overlap is computed when the SV end points fall
                     # exactly within the CIPOS and CIEND
@@ -1020,7 +1020,7 @@ class VCFANNO:
                     db_ci_merge_m, fam_ci_merge_m_same = self.getSameSVTypeDB(
                                                              ci_merge_m,db_type,
                                                              sv_type,ngc_id)
-                    '''  
+                      
                     # Total count of overlapping SV types of same SV types
                     db_var_num = self.getSVCount(db_merge_m_70_same) 
                     
@@ -1171,7 +1171,23 @@ class VCFANNO:
                     out_cmd = [str(lineCount),sv_id,'\t'.join(out_str)]
                     print >>wh,'\t'.join(out_cmd)
 
-                elif db_type in ['user']:
+                elif db_type in ['promoter']:
+                    ovFrac=0.0
+                    db_merge_m = self.getAlldbOverlap(st_pos,en_pos,stM_pos,
+                                                        enM_pos,strs,ovFrac,
+                                                            db_type,sv_type,
+                                                               ngc_fam_flag,
+                                                                 debug_flag
+                                                     )
+
+                    
+                    out_str = self.getUserAnnoOverlap(configDict,db_merge_m,
+                                                                    db_type
+                                                     )
+                    out_cmd = [str(lineCount),sv_id,'\t'.join(out_str)]
+                    print >>wh,'\t'.join(out_cmd)
+
+                elif db_type in ['blacklist']:
                     ovFrac=0.0
                     db_merge_m = self.getAlldbOverlap(st_pos,en_pos,stM_pos,
                                                         enM_pos,strs,ovFrac,
