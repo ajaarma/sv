@@ -983,7 +983,7 @@ class DEMO:
         for i,db in enumerate(db_list):
             if db == "ngc" and re.search("38",genome_ref):
                 db_list[i] = "ngc38"
-                db_list.append("ngclov")
+                #db_list.append("ngclov")
             if db == "ngc" and re.search("37",genome_ref):
                 db_list[i] = "ngc37"
 
@@ -1074,7 +1074,7 @@ class DEMO:
         for i,db in enumerate(db_list):
             if db == "ngc" and re.search("38",genome_ref):
                 db_list[i] = "ngc38"
-                db_list.append("ngclov")
+                #db_list.append("ngclov")
             if db == "ngc" and re.search("37",genome_ref):
                 db_list[i] = "ngc37"
 
@@ -1190,6 +1190,76 @@ class DEMO:
         print >>wh, "\n############## End of Merge and Formatting Step ###############\n"
 
         return out_ovp_list, wh
+
+    def writeDemoFormatGT(self,configDict,manifest,fam_id,out_ovp_mrg_list,
+                                                            tmp_stat_file,wh):
+        ''' Subroutine to launch formating genotype script '''
+
+        print >>wh, 'echo \" Begin of formatting of genotype of merged step \"'
+        fmt_gt_script = script_path+'/'+configDict['formatGT']['scripts']
+        resource_path = configDict['general']['resourceDir']
+        refGenome = configDict['general']['genomeBuild']
+        par_file = '/'.join([resource_path,
+                             configDict['par'][refGenome]
+                            ])
+        out_ovp_mrg_fmt_list = []
+
+
+        print >>wh, "\n############## Begin of Merge and Formatting Step ###############\n"
+
+        for inpFile in out_ovp_mrg_list:
+            outFile = re.split('.bed.gz',inpFile)[0]+'.fmt.bed.gz'
+            cmd = ['python',fmt_gt_script,'-m',manifest,'-i',inpFile,'-o',outFile,
+                                                        '-f',fam_id,'-p',par_file,
+                                                                    '-r',refGenome
+                  ]
+            print >>wh,' '.join(cmd)
+            out_ovp_mrg_fmt_list.append(outFile)
+            wh = self.checkErrorFile(outFile,wh,"error",tmp_stat_file)
+        
+        print >>wh, 'echo \" End of formatting of genotype of merged step \"'
+        print >>wh, "\n############## End of Merge and Formatting Step ###############\n"
+
+        return out_ovp_mrg_fmt_list,wh
+
+    def writeDemoFamFilter(self,configDict,manifest,ngc_id,fam_id,out_ovp_mrg_list,
+                                                fam_ngc_dir,tmp_stat_file,wh):
+
+        ''' Subroutine Function to launch Rscript family filtering. '''
+
+        print >>wh,"########### Starting Family filtering for family: ",\
+                    fam_id," ############\n"
+        print >>wh, "\necho \"Begin of Family-Filtering step\"\n" 
+        
+        resource_path = configDict['general']['resourceDir']
+        script_path   = os.path.dirname(os.path.dirname(os.path.abspath( __file__ )))
+        famBin        = script_path+'/'+configDict['famFilter']['famBin']
+        ovFrac_list   = re.split('\,',configDict['overlapMerge']['ovFrac'])
+        imprint_genes = '/'.join([resource_path,
+                                  configDict['imprint']
+                                 ])
+        ref_genome    = configDict['general']['genomeBuild']
+
+        filter_dir    = fam_ngc_dir+'/filter/'
+        print >>wh, 'mkdir -p '+filter_dir
+        
+        for inpFile in out_ovp_mrg_list:
+            for ovFrac in ovFrac_list:
+                if re.search(str(ovFrac)+'.overlap',inpFile):
+                    fam_cmd = ['Rscript ',famBin,'-v',inpFile,'-o',filter_dir,'-f',fam_id,
+                                                    '-n',ngc_id,'-p',manifest,'-c',ovFrac,
+                                                    '-i',imprint_genes,'-r',ref_genome
+                              ]
+
+                    print >>wh,' '.join(fam_cmd)
+                    
+        
+        print >>wh, "echo \"End of Family-Filtering step\"\n" 
+        
+        print >>wh,"########### End of Family filtering for family: ",fam_id,\
+                    " ############\n"
+
+        return wh
 
     def checkErrorFile(self,out_file,wh,flag,status_file=[]):
         

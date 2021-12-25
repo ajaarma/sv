@@ -3,10 +3,10 @@
   <!--Configuration file for the NGC-SNV pipeline-->
 	<version>V1</version>
  	<general>
-		<author>aak@ebi.ac.uk</author>
+		<author>test@gmail.com</author>
 	  	<date>21-11-2021</date> <!-- DD-MM-YY -->
 		<resourceDir>/hps/nobackup/research/dunham/sv/demo/resources</resourceDir>
-		<genomeBuild>grch37</genomeBuild>
+		<genomeBuild>grch38</genomeBuild>
 		<extName>.0based.</extName>
 		<task></task> <!-- Possible values: annotation/vcfanno/annotsv -->
 		<cluster>slurm</cluster>

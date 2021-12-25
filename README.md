@@ -38,6 +38,8 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 	$ conda install -c r r-dplyr
 	$ conda install -c r r-plyr
 	$ conda install -c r r-data.table
+	$ conda install -c conda-forge r-future.apply
+	$ conda install -c conda-forge r-r.utils 
 	$ conda install -c bioconda ucsc-liftover
 	$ conda install -c bioconda vcfanno
 

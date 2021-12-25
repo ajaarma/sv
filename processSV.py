@@ -190,7 +190,7 @@ if __name__=="__main__":
                                                     tmp_stat_file,genome_ref,swh
                                                                       )
 
-                    ''' 
+                     
                     #Optional: sub-step 3; Format GT if they are missing specially
                     # for Canvas related calls
                     if configDict['formatGT']['flag']=='True':
@@ -205,7 +205,7 @@ if __name__=="__main__":
                                                       fam_ngc_dir,tmp_stat_file,swh
                                                   )
  
-                    '''
+                    
 
                 swh.close()
                 if launch_flag:

@@ -12,7 +12,6 @@ qualFilter = function(df,ngc_id,ref_genome) {
 
     message(' -- Processing quality filter')
     if (nrow(df) >=1) {
-        #tmpA <- subset(df,grepl("Manta",NGC38_ALL_SAME_ID) & grepl("Canvas",NGC38_ALL_SAME_ID))
         if(ref_genome=='grch37'){
             tmpA <- subset(df,grepl("Manta",NGC37_FAM_SAME_ID) & grepl("Canvas",NGC37_FAM_SAME_ID))
             tmpA1 <- subset(tmpA,grepl(ngc_id,NGC37_FAM_SAME_ID))
@@ -21,11 +20,9 @@ qualFilter = function(df,ngc_id,ref_genome) {
             tmpA <- subset(df,grepl("Manta",NGC38_FAM_SAME_ID) & grepl("Canvas",NGC38_FAM_SAME_ID))
             tmpA1 <- subset(tmpA,grepl(ngc_id,NGC38_FAM_SAME_ID))
         }
+        print('before')
         tmpB <- subset(df, SVTYPE %in% c('DEL','DUP','INV','INS','BND') & grepl("PASS|^MGE10kb$|^CLT10kb$",FILTER)) #Include MGE10KB, CLT10Kb
-        #tmpC <- subset(df, SVTYPE %in% c('INV') & FILTER == 'PASS' )#& abs(as.numeric(SVLEN_ALL)) < 500000)
-        #tmpD <- subset(df,SVTYPE %in% c('DEL','BND') & FILTER == 'PASS')
 
-        #x = unique(rbind(tmpA,tmpB,tmpC,tmpD))
         x = unique(rbind(tmpA,tmpA1,tmpB))
     }
     else {
@@ -42,17 +39,9 @@ impFilter <- function(df) {
         tmpA <- subset(df, SVTYPE %in% c('DEL','DUP','INV','INS') & IS_PROT_CODING & ((as.numeric(NUM_OVLAP_EXONS) >0)| SVLEN_ALL > 1000 | IN_PROMOTER))
         tmpA1 <- subset(df, SVTYPE %in% c('DEL','DUP') & ((DEC_SAME_ID != 'NA' & SVLEN>=500000)|DEC_SAME_ROF_ID !='NA'))
         tmpA2 <- subset(df, SVTYPE %in% c('DEL','DUP') & ((grepl("pathogenic",DBVAR_SAME_ROF_ID) & SVLEN>=500000)))
-        #tmpA2 <- subset(df, SVTYPE %in% c('DEL','DUP') & (grepl("pathogenic",DBVAR_SAME_ROF_ID))
 
-        #tmpB = subset(df, SVTYPE %in% c('INV','INS') & IN_GENELIST_COLL & IS_PROT_CODING & ((as.numeric(NUM_OVLAP_EXONS) > 0) | SVLEN_ALL >1000)) #Get rid of Gene list and merge with tmpA
-        #tmpA1 = subset(df,SVTYPE %in% c('DEL','DUP'))
-        #tmpC = subset(df,SVTYPE %in% c('INS') & IN_GENELIST_COLL & IS_PROT_CODING & SVLEN_ALL >1000) #Get rid of this; make INS and BND same
         tmpC = subset(df,SVTYPE %in% c('BND') & IS_PROT_CODING ) #Get rid of gene list; Only BND
-        #tmpD = subset(df,SVTYPE %in% c('DEL','DUP','INS','INV') & IN_PROMOTER & IS_PROT_CODING)
-        #tmpD = subset(df,SVTYPE %in% c('BND') & IS_PROT_CODING)
         
-        #x = unique(rbind(tmpA,tmpA1,tmpA2,tmpB,tmpC,tmpD))
-        #x = unique(rbind(tmpA,tmpC,tmpD))
         x = unique(rbind(tmpA,tmpA1,tmpA2,tmpC))
     }else {
         x <- NULL
@@ -392,16 +381,6 @@ AR_hom <- function(df,affected, non_affected,parents,ref_genome) {
             }
         }
 
-        #tmp2 = tmp[apply(data.frame(tmp[,c('MOTHER_FAM_1K','FATHER_FAM_1K')])
-        #tmp2 = tmp[apply(data.frame(tmp[,c('MOTHER','FATHER')])
-        #tmp2 = tmp[apply(data.frame(tmp[,non_affected])
-        #                 ,MARGIN = 1
-        #                 #,function(x) all(checkNotIn(x,c("1/1","1"),"-")))
-        #                 ,function(x) all(checkNotIn(x,c("^1/1:|^1:"),"-")))
-        #            ,]
-
-        #x = recessive_filter(tmp2)
-        #x = recessive_filter(tmp3,ref_genome)
         x = recessive_filter(tmp3,ref_genome)
         
         if (nrow(x) >=1) {x$MOI <- "AR_hom"}
@@ -444,7 +423,7 @@ XL <- function(df,affected, non_affected,gene_type,ref_genome){
                 df.filt = df.unaff
         }
 
-        tmp4 = subset(df.filt,grepl('PCDH19',ENS_HGNC_ID) || grepl('PCDH19',REF_GENE_HGNC_ID))
+        #tmp4 = subset(df.filt,grepl('PCDH19',ENS_HGNC_ID) || grepl('PCDH19',REF_GENE_HGNC_ID))
 
         ##### To DO : implement hemi filter #####
         ## x = hemi_filter(df.filt)

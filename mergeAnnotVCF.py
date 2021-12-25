@@ -52,7 +52,8 @@ if __name__=="__main__":
     ens_exon_hash = OrderedDict()
     ref_gene_hash = OrderedDict()
     ref_exon_hash = OrderedDict()
-    user_prom_hash = OrderedDict()
+    prom_hash = OrderedDict()
+    bl_hash = OrderedDict()
 
     wh = gzip.open(out_dir+"/"+fam_id+".merged.all."+ovFrac+".overlap.bed.gz","wb")
 
@@ -96,11 +97,11 @@ if __name__=="__main__":
                 if re.search("ngc37",ele):
                     ngc_hash[sv_id] = strs[2:]
 
-                if re.search("fam",ele):
-                    ngc_fam_hash[sv_id] = strs[3:]
+                #if re.search("fam",ele):
+                #    ngc_fam_hash[sv_id] = strs[3:]
 
-                if re.search("ngclov",ele):
-                    ngclov_hash[sv_id] = strs[2:]
+                #if re.search("ngclov",ele):
+                #    ngclov_hash[sv_id] = strs[2:]
 
                 if re.search("decipher",ele):
                     decipher_hash[sv_id] = strs[2:]
@@ -119,9 +120,11 @@ if __name__=="__main__":
                     ref_gene_hash[sv_id] = strs[2:] 
                 if re.search('ref_exon',ele):
                     ref_exon_hash[sv_id] = strs[2:] 
-                if re.search('user',ele):
-                    user_prom_hash[sv_id] = strs[2:]
-           
+                if re.search('promoter',ele):
+                    prom_hash[sv_id] = strs[2:]
+                if re.search('blacklist',ele):
+                    bl_hash[sv_id] = strs[2:]
+            
             fh.close()
             
         if re.search("ensembl",ele):
@@ -146,9 +149,14 @@ if __name__=="__main__":
     fh.close()
 
     # Initializing the header information
+    '''
     rest_header = ["SV_ID","CHROM","START_POS","END_POS","SVTYPE_ORIG","CALLER_ID",
                          "REF","ALT","QUAL_SCORE","FILTER","CIPOS","CIEND","SVLEN",
                                                 "CNVLEN","SVLEN_ALL","GT","SVTYPE"
+    '''
+    rest_header = ["SV_ID","CHROM","START_POS","END_POS","SVTYPE","CALLER_ID",
+                         "REF","ALT","QUAL_SCORE","FILTER","CIPOS","CIEND","SVLEN",
+                                                "GT"
                   ]
     gn_header   = ["GN_SAME_ID","GN_SAME_COUNT","GN_AC","GN_AF"]
     
@@ -157,9 +165,9 @@ if __name__=="__main__":
                         "NGC38_FAM_SAME_ID","NGC38_FAM_SAME_COUNT",
                                 "PROBAND","MOTHER","FATHER","SIB"
                      ]
-        ngclov_header = ["NGC37_ALL_SAME_ID","NGC37_ALL_SAME_COUNT",
-                                            "NGC37_ALL_SAME_FREQ"
-                        ]
+        #ngclov_header = ["NGC37_ALL_SAME_ID","NGC37_ALL_SAME_COUNT",
+        #                                    "NGC37_ALL_SAME_FREQ"
+        #                ]
     elif re.search("37",genome_ref):
          ngc_header = ["NGC37_ALL_SAME_COUNT","NGC37_ALL_SAME_FREQ",
                        "NGC37_FAM_SAME_ID","NGC37_FAM_SAME_COUNT",
@@ -183,23 +191,24 @@ if __name__=="__main__":
                       ]
     ref_exon_header = ['REF_GEXON_HGNC_ID','REF_NUM_OVERLAP_GEXONS']
     
-    user_prom_header = ['USER_PROMOTER_ID','IN_PROMOTER']
+    prom_header = ['PROMOTER_ID','IN_PROMOTER']
+    bl_header = ['BLACKLIST_ID','IN_BLACKLIST']
 
     extra_columns   = ['IN_IMPRINTED_COLL','IN_GENELIST_COLL','IN_HPOGENE_COLL',
                         'IS_PROT_CODING','NUM_OVLAP_EXONS'
                       ]
 
     if re.search("38",genome_ref):
-        print >>wh,"\t".join(rest_header+gn_header+ngclov_header+ngc_header+
+        print >>wh,"\t".join(rest_header+gn_header+ngc_header+
                               decipher_header+dbvar_header+ens_trans_header+
                             ens_exon_header+ref_gene_header+ref_exon_header+
-                                              user_prom_header+extra_columns
+                                prom_header+bl_header+extra_columns
                             )
     elif re.search("37",genome_ref):
         print >>wh,"\t".join(rest_header+gn_header+ngc_header+decipher_header+
                                 dbvar_header+ens_trans_header+ens_exon_header+
                                               ref_gene_header+ref_exon_header+
-                                                user_prom_header+extra_columns
+                                        prom_header+bl_header+extra_columns
                             )
 
     # Extracting and concatenating information from each of the overlap files
@@ -216,48 +225,56 @@ if __name__=="__main__":
         
         rest_strs = rest_hash[keys]
         st_pos = int(key_strs[1])
-        en_pos = int(key_strs[2])
+        try:
+            en_pos = int(key_strs[2])
+        except ValueError:
+            en_pos = st_pos+1
 
         if re.search('37',genome_ref):
             rest_strs.insert(7,'.')
         
         try:
-            svlen = abs(int(rest_strs[6]))
+            #svlen = abs(int(rest_strs[6])) #For NGC samples
+            svlen = abs(int(rest_strs[7]))  #For Demo purpose
         except:
             svlen = en_pos - st_pos 
         try:
-            cnvlen = abs(int(rest_strs[7]))
-            #cnvlen = svlen
+            #cnvlen = abs(int(rest_strs[7])) # For NGC samples
+            cnvlen = svlen # For demo purpose
         except:
             cnvlen = en_pos - st_pos
     
         svlen_all = ''
        
-        svlen_all = str((svlen+cnvlen)/2)
-        #rest_strs.insert(7,str(cnvlen))
-        rest_strs.insert(8,svlen_all)
+        # Commeted. Explicitly for NGC samples (Manta & Canvas calls
+        #svlen_all = str((svlen+cnvlen)/2)
+        #rest_strs.insert(8,str(cnvlen))
+        #rest_strs.insert(9,svlen_all)
 
         rest_list = ["\t".join(rest_strs)]
         gn_list   = ["\t".join(gn_hash[keys])]
         ngc_list  = ["\t".join(ngc_hash[keys])]
 
+        ''' 
         # Extract NGC-37 lift-over information
         if re.search("38",genome_ref):
             ngclov_list   = ["\t".join(ngclov_hash[keys])]
-
+        '''
         # Extract - Decipher-DDD information
         dec_list  = ["\t".join(decipher_hash[keys])]
         
-        # Extract Ensembl based information - Albas' code
+        # Extract Ensembl based information
         if ensembl_hash:
             en_list   = ["\t".join(ensembl_hash[keys])]
         
-        # Extract Ensembl and Refseq - gene and exon information
+        # Extract Ensembl and Refseq - gene,exon & promoter, blacklist region
+        # information
         ens_trans_list = ['\t'.join(ens_trans_hash[keys])]
         ens_exon_list  = ['\t'.join(ens_exon_hash[keys])]
         ref_gene_list  = ['\t'.join(ref_gene_hash[keys])]
         ref_exon_list  = ['\t'.join(ref_exon_hash[keys])]
-        user_prom_list = ['\t'.join(user_prom_hash[keys])]
+        prom_list      = ['\t'.join(prom_hash[keys])]
+        bl_list        = ['\t'.join(bl_hash[keys])]
 
         ens_in_gene = any([json.loads(x.lower()) for x in re.split('\/',
                                           ens_trans_hash[keys][5])
@@ -316,10 +333,10 @@ if __name__=="__main__":
         
         # Concatenate the information based on reference genome build
         if re.search("38",genome_ref):
-            merge_list = rest_list+sv_type+gn_list+ngclov_list+\
+            merge_list = rest_list+sv_type+gn_list+\
                          ngc_list+dec_list+dbvar_list+ens_trans_list+\
                          ens_exon_list+ref_gene_list+ref_exon_list+\
-                         user_prom_list+\
+                         prom_list+bl_list+\
                          [str(ens_ref_in_imp_coll).upper(),
                           str(ens_ref_in_genelist_coll).upper(),
                           str(ens_ref_in_hpo_coll).upper(),
@@ -331,7 +348,7 @@ if __name__=="__main__":
             merge_list = rest_list+sv_type+gn_list+ngc_list+\
                          dec_list+dbvar_list+ens_trans_list+\
                          ens_exon_list+ref_gene_list+ref_exon_list+\
-                         user_prom_list+\
+                         prom_list+bl_list+\
                          [str(ens_ref_in_imp_coll).upper(),
                           str(ens_ref_in_genelist_coll).upper(),
                           str(ens_ref_in_hpo_coll).upper(),
@@ -340,8 +357,7 @@ if __name__=="__main__":
                          ]
  
         key_strs = re.split('\+',keys)[0:5]
-        #print >>wh,keys+"\t"+"\t".join(merge_list)
-        print >>wh,keys+'\t'+'\t'.join(key_strs)+"\t"+"\t".join(merge_list)
+        print >>wh,'\t'.join([keys.strip()]+key_strs+merge_list)
 
     wh.close()
 

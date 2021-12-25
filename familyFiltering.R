@@ -100,7 +100,7 @@ ref_genome = opt$reference
 #                                           #
 #############################################
 
-    vars = fread(inpFile,sep="\t",head=T,stringsAsFactor=F)
+    vars = fread(inpFile,sep="\t",stringsAsFactor=F,header=TRUE,fill=T)
     vars = as.data.frame(vars)
 
     vars_qual = qualFilter(vars,ngc_id,ref_genome)
