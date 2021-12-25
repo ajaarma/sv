@@ -20,10 +20,10 @@ qualFilter = function(df,ngc_id,ref_genome) {
             tmpA <- subset(df,grepl("Manta",NGC38_FAM_SAME_ID) & grepl("Canvas",NGC38_FAM_SAME_ID))
             tmpA1 <- subset(tmpA,grepl(ngc_id,NGC38_FAM_SAME_ID))
         }
-        print('before')
         tmpB <- subset(df, SVTYPE %in% c('DEL','DUP','INV','INS','BND') & grepl("PASS|^MGE10kb$|^CLT10kb$",FILTER)) #Include MGE10KB, CLT10Kb
 
         x = unique(rbind(tmpA,tmpA1,tmpB))
+        print(dim(x))
     }
     else {
         x <- NULL
@@ -40,7 +40,7 @@ impFilter <- function(df) {
         tmpA1 <- subset(df, SVTYPE %in% c('DEL','DUP') & ((DEC_SAME_ID != 'NA' & SVLEN>=500000)|DEC_SAME_ROF_ID !='NA'))
         tmpA2 <- subset(df, SVTYPE %in% c('DEL','DUP') & ((grepl("pathogenic",DBVAR_SAME_ROF_ID) & SVLEN>=500000)))
 
-        tmpC = subset(df,SVTYPE %in% c('BND') & IS_PROT_CODING ) #Get rid of gene list; Only BND
+        tmpC = subset(df,SVTYPE %in% c('BND') & IS_PROT_CODING )
         
         x = unique(rbind(tmpA,tmpA1,tmpA2,tmpC))
     }else {
