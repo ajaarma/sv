@@ -6,7 +6,7 @@ The pipeline requires annotation sources, customized datasets, available tools (
 
 For demonstration purpose below example is presented for GRCh38. However, the same can be replicated for GRCh37 as well.
 
-The pipeline and filtering pipeline has been optimized for SVs called using Manta/Canvas (Illumina pipeline). However, for demonstration purpose the pipeline has been adjusted to annotate SVs called by Lumpy. 
+The pipeline and filtering pipeline has been optimized for NGC samples where SVs called using Manta/Canvas (Illumina pipeline). However, for demonstration purpose the pipeline has been adjusted to annotate SVs of an example trios from The International Genome Sample Resource (IGSR) ideally called by Lumpy. 
 
 # Installation
 	git clone https://github.com/ajaarma/sv.git
@@ -221,7 +221,7 @@ After creating the annotation source the input vcf files can be annotated using 
 	(6) Incorporate the frequency and inheritance filtering on the anntated SVs.
 
 N.B: (1) Current implementation steps of the pipeline (step 1-6) has been optimized for NGC project WGS samples. 
-     (2) However for demonstration purpose we provide example scripts that were used to annotate The International Genome Sample Resource (IGSR) trio SVs called by LUMPY. It only implements steps 1-5 only. See demo/examples/samples/ directory
+     (2) However for demonstration purpose we provide example scripts that were used to annotate IGSR trio SVs called by LUMPY. It only implements steps 1-5 only. See demo/examples/samples/ directory
 
 	- Example command to generate the scripts:
 	Input requirement: The manifest file which holds pedigree information and their correpsonding SV vcf file.
