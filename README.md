@@ -37,7 +37,7 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 	$ conda install -c r r-optparse
 	$ conda install -c r r-dplyr
 	$ conda install -c r r-plyr
-	$ conda install -c r r-data.table
+	$ conda install -c r r-data.table=1.13.4
 	$ conda install -c conda-forge r-future.apply
 	$ conda install -c conda-forge r-r.utils 
 	$ conda install -c bioconda ucsc-liftover
