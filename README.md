@@ -4,7 +4,9 @@ Structural variant (SV) calling pipeline explicity developed to process individu
 
 The pipeline requires annotation sources, customized datasets, available tools (vcfanno,bcftools) and input set of SVs in vcf format. It generates analysis scripts that can be incorporated into any high performance clusters (HPC). This results in list of filtered variants per family that can be used for interpretation, reporting and downstream analysis/
 
-For demonstration purpose below example is presented for GRCh37. However, the same can be replicated for GRCh38.
+For demonstration purpose below example is presented for GRCh38. However, the same can be replicated for GRCh37 as well.
+
+The pipeline and filtering pipeline has been optimized for SVs called using Manta/Canvas (Illumina pipeline). However, for demonstration purpose the pipeline has been adjusted to annotate SVs called by Lumpy. 
 
 # Installation
 	git clone https://github.com/ajaarma/sv.git
