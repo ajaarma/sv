@@ -255,8 +255,8 @@ N.B: (1) Current implementation steps of the pipeline (step 1-6) has been optimi
 # 
 
 Please contact us for any quesries related to pipeline:
-Ajay : aak@ebi.ac.uk
-Courtney : cf458@cam.ac.uk
+	Ajay : aak@ebi.ac.uk
+	Courtney : cf458@cam.ac.uk
 
 
 
