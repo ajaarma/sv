@@ -253,8 +253,7 @@ N.B: (1) Current implementation steps of the pipeline (step 1-6) has been optimi
 
 ##### Contact details ######
  
-
-Please contact us for any quesries related to pipeline:
+	Please contact us for any queries related to SV pipeline:
 	Ajay : aak@ebi.ac.uk
 	Courtney : cf458@cam.ac.uk
 
