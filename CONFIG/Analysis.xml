@@ -27,7 +27,7 @@
 			<ntasks>=1</ntasks>
 			<time>=36:00:00</time>
 			<mail-type>=FAIL,END</mail-type>
-			<mail-user>=aak@ebi.ac.uk</mail-user>
+			<mail-user>=test@gmail.com</mail-user>
 			<output>%outFile%</output>
 			<error>%errorFile%</error>
 			<exclusive> </exclusive>

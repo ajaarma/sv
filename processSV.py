@@ -189,7 +189,7 @@ if __name__=="__main__":
                                                            xml_file,out_overlap,
                                                     tmp_stat_file,genome_ref,swh
                                                                       )
-
+                    ''' 
                      
                     #Optional: sub-step 3; Format GT if they are missing specially
                     # for Canvas related calls
@@ -204,7 +204,7 @@ if __name__=="__main__":
                                                       fam_id,out_ovp_mrg_list,
                                                       fam_ngc_dir,tmp_stat_file,swh
                                                   )
- 
+                    '''
                     
 
                 swh.close()

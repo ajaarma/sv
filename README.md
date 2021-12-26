@@ -48,7 +48,17 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 #
 
 ##### Building up of Annotation sources ############
-	
+
+	* With this release we are providing all the respective annotation sources downloaded and processed for both GRCh37 and GRCh38 version.
+		- The example data can be found via this link: https://drive.google.com/drive/folders/1pCJj2KbQScpy1XSGTTDx70ewgwc5tirn?usp=sharing 
+		- Please extract the demo.tar.gz file under your chosen directory. It contains:
+			(a) resource directory [demo/resources/]
+			(b) examples directory [demo/examples/]
+		- Please define your own <resource-path> and append to the demo folder path. Edit the CONFIG/Analysis.xml file:
+		<general>
+			<resourceDir> your own path </resourceDir>
+		</general>
+		
 	* Annotation of SVs in this pipeline is done by vcfanno tool [Brent et.al 2016]. 
 	  This requires annotation sources to be processed in specific tab separated format. 
 	  The format is defined as:
@@ -58,16 +68,16 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 
 	* The pipeline requires following annotation sources categorised as:
 		1. Population databases:
-			1.1. gnomad SVs
-			1.2. NGC samples (internal cohort)	
+			1.1. gnomAD SVs
+			1.2. Internal cohort (NGC samples)	
 		2. Gene information:
-			2.1. Ensembl: Promoter, Transcript, Exons
+			2.1. Ensembl: Transcript, Exons
 			2.2. Refseq: Gene, Exons 
 		3. Pathogenecity
 			3.1. Decipher
 			3.2. dbVar: Clingen(nstd45),User(nstd51),Clinvar(nstd102)
 		4. Others:
-			4.1. Promoter regions
+			4.1. Promoter regions (Ensembl)
 			4.2. Blacklist regions
 
 	
@@ -77,10 +87,9 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 				      -r <ref-genome-version>
 				      -l <lift-over-flag>
 				      -m <manifest-file-internal-cohort-NGC>
-				      -p <project-name>
+				      -p <project-name (optional)>
 
-	With this release we are providing all the respective annotation sources downloaded and processed for both GRCh37 and GRCh38 version. These can be found in respective folder 
-		demo/resources/ folder.
+	All the annotation sources including raw and processed (grch37/grch38) are currently provided with this release. See in demo/resource/ folders. However for demonstration purpose following commands are used:
 
 	* Processing gnomAD SVs
 		Example command to process gnomad SVs (grch37 version):
@@ -94,7 +103,7 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 		$ python processDB.py -a CONFIG/Analysis.xml -d gnomad 
 				      -r grch37 -l True
 
-	* Processing NGC samples (Internal Cohort)
+	* Processing Internal cohort (Example cases )
 		- The sample vcfs have not been provided with this repo. But can be replicated for any other  internal cohort.
 		- The samples should be spcified as in example manifest file: 
 			demo/examples/manifest.txt
@@ -198,7 +207,7 @@ For demonstration purpose below example is presented for GRCh37. However, the sa
 
 ##### SV pipeline using Vcfanno ############
 		
-After creating the annotation source the input vcf files can be annotated using following command. It generates shell scripts. Generally for large cohort analysis it can be integrated into any HPC services such as SLURM/LSF/PBS. For a given trio family, the pipeline annoates the input SVs of proband and the mMain steps are:
+After creating the annotation source the input vcf files can be annotated using following command. It generates shell scripts. Generally for large cohort analysis it can be integrated into any HPC services such as SLURM/LSF/PBS. For a given trio family, the pipeline annoates the input SVs of proband. The main steps are:
 
 	(1) Normalizing vcfs for multi-allelic sites.
 	(2) Annotation using Vcfanno by incorporating above databases.
@@ -234,9 +243,9 @@ N.B: Current implementation steps of the pipeline (step 1-6) has been optimized 
 	N.B: For replicating the same for NGC-WGS-cohort, please use the analysis type: vcfanno_ngc
 		
 
-	- Output: This command will generate the shell scripts in <resource-path>demo/examples/20211210/tmp_binaries/NA19240.vcfanno_demo.sh
+	- Output: This command will generate the shell scripts in <resource-path>demo/examples/20211210/tmp_binaries/NGC001_01.vcfanno_demo.sh
 	- One can launch the script their own preferred HPC scheduler such as SLURM/LSF/PBS by adding relevant memory and CPU configurations.
-	- With the provided demo 1000 genome trio data only the final merged annotated SVs of the proband can be obtained. The filtering pipeline has been tested and customized for NGC-WGS-cohort samples.
+	- With the provided demo/examples the trio data (The International Genome Sample Resource - IGSR only the final merged annotated SVs (called by LUMPY) of the proband can be obtained. The filtering pipeline has been tested and customized for NGC-WGS-cohort samples which were eventually called vby Manta & Canvas.
 	
 #
 # Contact details
