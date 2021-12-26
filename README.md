@@ -218,7 +218,7 @@ After creating the annotation source the input vcf files can be annotated using 
 	(5) Merge all the extracted fields
 	(6) Incorporate the frequency and inheritance filtering on the anntated SVs.
 
-N.B: Current implementation steps of the pipeline (step 1-6) has been optimized for NGC project WGS samples. However for demonstration purpose we provide example scripts that were used to annotate 1000 genome example trio SVs. See demo/examples/samples/ directory
+N.B: Current implementation steps of the pipeline (step 1-6) has been optimized for NGC project WGS samples. However for demonstration purpose we provide example scripts that were used to annotate The International Genome Sample Resource (IGSR) trio SVs called by LUMPY. See demo/examples/samples/ directory
 
 	- Example command to generate the scripts:
 	Input requirement: The manifest file which holds pedigree information and their correpsonding SV vcf file.
@@ -234,7 +234,7 @@ N.B: Current implementation steps of the pipeline (step 1-6) has been optimized 
 
 	Example run:
 	$ python processSV.py -m <resource-path>/demo/examples/manifest.txt 
-			-a CONFIG/Analysis.v1.xml 
+			-a CONFIG/Analysis.xml 
 			-w <resource-path>/demo/examples/ 
 			-e vcfanno_demo 
 			-f <resource-path>/demo/examples/family_id.txt 
@@ -245,7 +245,7 @@ N.B: Current implementation steps of the pipeline (step 1-6) has been optimized 
 
 	- Output: This command will generate the shell scripts in <resource-path>demo/examples/20211210/tmp_binaries/NGC001_01.vcfanno_demo.sh
 	- One can launch the script their own preferred HPC scheduler such as SLURM/LSF/PBS by adding relevant memory and CPU configurations.
-	- With the provided demo/examples the trio data (The International Genome Sample Resource - IGSR only the final merged annotated SVs (called by LUMPY) of the proband can be obtained. The filtering pipeline has been tested and customized for NGC-WGS-cohort samples which were eventually called vby Manta & Canvas.
+	- With the provided demo/examples the SV trio data (IGSR) only the final merged annotated SVs (called by LUMPY) of the proband can be obtained. The filtering pipeline has been tested and customized for NGC-WGS-cohort samples which were eventually called vby Manta & Canvas.
 	
 #
 # Contact details
