@@ -250,9 +250,9 @@ N.B: (1) Current implementation steps of the pipeline (step 1-6) has been optimi
 	- One can launch the script their own preferred HPC scheduler such as SLURM/LSF/PBS by adding relevant memory and CPU configurations.
 	- With the provided demo/examples the SV trio data (IGSR) only the final merged annotated SVs (called by LUMPY) of the proband can be obtained. The filtering pipeline has been tested and customized for NGC-WGS-cohort samples which were eventually called vby Manta & Canvas.
 	
-#
-# Contact details
-# 
+
+##### Contact details ######
+ 
 
 Please contact us for any quesries related to pipeline:
 	Ajay : aak@ebi.ac.uk
