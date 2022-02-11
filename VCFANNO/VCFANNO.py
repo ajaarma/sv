@@ -524,11 +524,12 @@ class VCFANNO:
         prom_flag = []
         bl_flag = []
         db_ovp_list = [x.strip() for x in db_ovp_list if x !='NA']
-        
+       
 
         if re.search('promoter',db_tag_type):
             
             ensg_gene_list=[];hgnc_gene_list=[];gene_bt_list=[]
+            
             for ovp_id in db_ovp_list:
                 strs = re.split('\*',ovp_id);
                 strs = [x.strip() for x in strs]
@@ -561,7 +562,7 @@ class VCFANNO:
                 prom_flag = 'TRUE'
             else:
                 prom_flag = 'FALSE'
-            
+           
             out_list = [out_list,prom_flag]
         
         elif re.search('blacklist',db_tag_type):
@@ -577,7 +578,7 @@ class VCFANNO:
                 bl_flag='FALSE'
             out_list = [out_list,bl_flag]
             
-            return out_list
+        return out_list
 
 
     def getGeneOverlap(self,configDict,db_ovp_list,curated_gene_dict,hpo_gene_dict,
@@ -1198,7 +1199,6 @@ class VCFANNO:
                                                                ngc_fam_flag,
                                                                  debug_flag
                                                      )
-
                     
                     out_str = self.getUserAnnoOverlap(configDict,db_merge_m,
                                                                     db_type
