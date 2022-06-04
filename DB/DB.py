@@ -751,6 +751,8 @@ class dbSV:
     def getCoordSorted(self,tmp_file,sort_file,db_type=[],ens_type=[]):
 
         bgzip = '~/anaconda3/envs/snv/bin/bgzip'
+        tabix = '~/anaconda3/envs/snv/bin/tabix'
+        
         tmp_merge_file = '/'.join([os.path.dirname(tmp_file),'tmp.merge.bed'])
         wh = open(tmp_merge_file,'w')
         self.mergeDupCoordBed(tmp_file,wh,db_type)
