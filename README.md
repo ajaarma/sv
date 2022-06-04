@@ -23,23 +23,20 @@ The pipeline and filtering pipeline has been optimized for NGC samples where SVs
 	$ conda create --name sv
 	$ source activate sv
 	$ conda install python=2.7.16
-	$ conda install -c bioconda vcfanno
 	$ pip install xmltodict
 	$ pip install dicttoxml
 	$ pip install numpy
-	$ conda install numpy
-	$ conda install -c bioconda ucsc-liftover
 	$ pip install vcf_parser
-	$ conda install samtools=1.3
-	$ conda install vcftools=0.1.14
-	$ conda install bcftools=1.9
-	$ conda install gcc #(OSX)
-	$ conda install gcc_linux-64 #(Linux)
-	$ conda install parallel
-	$ conda install -c r r-optparse
-	$ conda install -c r r-dplyr
-	$ conda install -c r r-plyr
-	$ conda install -c r r-data.table=1.13.4
+	$ conda install -c bioconda samtools=1.3
+	$ conda install -c bioconda vcftools=0.1.14
+	$ conda install -c bioconda bcftools=1.9
+	$ conda install -c anaconda gcc #(OSX)
+	$ conda install -c anaconda gcc_linux-64 #(Linux)
+	$ conda install -c conda-forge parallel
+	$ conda install -c conda-forge r-optparse
+	$ conda install -c conda-forge r-dplyr
+	$ conda install -c conda-forge r-plyr
+	$ conda install -c conda-forge r-data.table=1.13.4
 	$ conda install -c conda-forge r-future.apply
 	$ conda install -c conda-forge r-r.utils 
 	$ conda install -c bioconda ucsc-liftover
