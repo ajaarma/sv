@@ -5,7 +5,7 @@
  	<general>
 		<author>test@gmail.com</author>
 	  	<date>21-11-2021</date> <!-- DD-MM-YY -->
-		<resourceDir>/hps/nobackup/research/dunham/sv/demo/resources</resourceDir>
+		<resourceDir>/nfs/research/dunham/samples/ddd/sv/demo/resources</resourceDir>
 		<genomeBuild>grch38</genomeBuild>
 		<extName>.0based.</extName>
 		<task></task> <!-- Possible values: annotation/vcfanno/annotsv -->
@@ -173,7 +173,6 @@
 		</grch38>
 	</decipher>
 
-	
 	<promoter>
 			<grch37>
 				<rawFile>promoter/grch37/Homo_sapiens.GRCh37.87.gtf.gz</rawFile>
