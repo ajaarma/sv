@@ -63,6 +63,9 @@ class dbSV:
 
         # Canvas related calls dont have Genotypes
         # Format style: GT:CN:FT; For Manta calls CN=.
+        
+        #print variant['FORMAT']
+        #genoType = []
         try:
             var_fmt = variant['FORMAT']
             if re.search("GT",var_fmt):
@@ -747,13 +750,14 @@ class dbSV:
 
     def getCoordSorted(self,tmp_file,sort_file,db_type=[],ens_type=[]):
 
+        bgzip = '~/anaconda3/envs/snv/bin/bgzip'
         tmp_merge_file = '/'.join([os.path.dirname(tmp_file),'tmp.merge.bed'])
         wh = open(tmp_merge_file,'w')
         self.mergeDupCoordBed(tmp_file,wh,db_type)
         wh.close()
 
-        print 'sort -k1,1V -k2,2n -k3,3n '+tmp_merge_file+' |bgzip -c > '+sort_file
-        os.system('sort -k1,1V -k2,2n -k3,3n '+tmp_merge_file+' |bgzip -c > '+sort_file)
+        print 'sort -k1,1V -k2,2n -k3,3n '+tmp_merge_file+' |'+bgzip+' -c > '+sort_file
+        os.system('sort -k1,1V -k2,2n -k3,3n '+tmp_merge_file+' |'+bgzip+' -c > '+sort_file)
         time.sleep(5.5)
         os.system('tabix -p bed '+sort_file)
         os.system('rm '+tmp_merge_file)
@@ -947,7 +951,8 @@ class dbSV:
         famOvpFracFlag = configDict['overlapMerge']['famOverlapFrac']
         queryInsOffset = configDict['query']['offset']['ins']
         queryBndOffset = configDict['query']['offset']['bnd']
-        bgzip = 'bgzip' #os.path.abspath(configDict['general']['samtools'])+'/bgzip'
+        #bgzip = 'bgzip' #os.path.abspath(configDict['general']['samtools'])+'/bgzip'
+        bgzip = '~/anaconda3/envs/snv/bin/bgzip'
         bcftools = 'bcftools' #os.path.abspath(configDict['general']['samtools'])+'/bcftools'
 
         # Processing each of the NGC family ids present in the manifest file
@@ -977,8 +982,10 @@ class dbSV:
                                     ' | '+bgzip+' -c > '+vcf_file_norm_gz
 
                     cmd_norm_index = bcftools+' index '+vcf_file_norm_gz
-                   
+                  
+                    print cmd_norm
                     os.system(cmd_norm)
+                    print cmd_norm_index
                     os.system(cmd_norm_index)
                    
                     # Extracting Illumina Id
