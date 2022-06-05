@@ -359,18 +359,19 @@ class dbSV:
             if ref_genome=="grch37":
                 
                 ngc_out_file = '/'.join([resource_path,dbDict[ref_genome]['annoFile']])
-                ngc_basename = os.path.basename(ngc_out_file)
-                ngc_dirname = '/'.join([os.path.dirname(ngc_out_file),proj_date])
-                os.system('mkdir -p '+ngc_dirname)
-                ngc_out_file = '/'.join([ngc_dirname,ngc_basename])
+                #ngc_basename = os.path.basename(ngc_out_file)
+                #ngc_dirname = '/'.join([os.path.dirname(ngc_out_file),proj_date])
+                #os.system('mkdir -p '+ngc_dirname)
+                #ngc_out_file = '/'.join([ngc_dirname,ngc_basename])
 
             elif ref_genome=="grch38":
                 ngc_out_file = '/'.join([resource_path,dbDict[ref_genome]['annoFile']])
-                ngc_basename = os.path.basename(ngc_out_file)
-                ngc_dirname = '/'.join([os.path.dirname(ngc_out_file),proj_date])
-                os.system('mkdir -p '+ngc_dirname)
-                ngc_out_file = '/'.join([ngc_dirname,ngc_basename])
+                #ngc_basename = os.path.basename(ngc_out_file)
+                #ngc_dirname = '/'.join([os.path.dirname(ngc_out_file),proj_date])
+                #os.system('mkdir -p '+ngc_dirname)
+                #ngc_out_file = '/'.join([ngc_dirname,ngc_basename])
 
+            ngc_dirname = os.path.dirname(ngc_out_file)
             print " -- The SV coordinates for NGC samples will be written to: "+ngc_out_file
             tmp_out_file = '/'.join([os.path.dirname(ngc_out_file),'tmp.bed.gz'])
             
@@ -973,7 +974,7 @@ class dbSV:
                 else:
                     strs = lines.split("\t")
                     ngc_id = strs[1].strip()
-                    vcf_file_strs = re.split(".genome.vcf.gz",strs[10].strip())
+                    vcf_file_strs = re.split(".SV.vcf.gz",strs[10].strip())
                     vcf_file_orig_gz = vcf_file_strs[0]+".SV.vcf.gz"
                     vcf_file_norm_gz = out_dir+'/'+\
                                        os.path.basename(vcf_file_strs[0])+\
