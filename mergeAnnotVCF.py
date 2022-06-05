@@ -24,6 +24,7 @@ if __name__=="__main__":
     manifest = cmd_dict['manifest']; rest_file = cmd_dict['rest'];
     anno_dir = cmd_dict['annoDir']; fam_id = cmd_dict['fam']
     genome_ref = cmd_dict['ref']; ovFrac = str(cmd_dict['overlap'])
+    anal_type = cmd_dict['analType']
 
     objS = SLURM()
     famDict = objS.getManifestDict(manifest)
@@ -69,7 +70,7 @@ if __name__=="__main__":
     for ele in dir_list:
 
         fh = []
-        if re.search('ngc38',ele) or re.search('ngc37',ele):# or \
+        if re.search('ngc38',ele) or re.search('ngc37',ele) or re.search('\.ngc\.',ele):# or \
             #re.search('gnomad',ele) or re.search('ngclov',ele):
             ele_strs = re.split('\.',ele)
             if re.search(ele_strs[1]+'.'+str(ovFrac),ele):
@@ -97,6 +98,8 @@ if __name__=="__main__":
                 if re.search("ngc37",ele):
                     ngc_hash[sv_id] = strs[2:]
 
+                if re.search("\.ngc\.",ele):
+                    ngc_hash[sv_id] = strs[2:]
                 #if re.search("fam",ele):
                 #    ngc_fam_hash[sv_id] = strs[3:]
 
@@ -149,15 +152,17 @@ if __name__=="__main__":
     fh.close()
 
     # Initializing the header information
-    '''
-    rest_header = ["SV_ID","CHROM","START_POS","END_POS","SVTYPE_ORIG","CALLER_ID",
+    if re.search('ngc',anal_type,re.IGNORECASE):
+        rest_header = ["SV_ID","CHROM","START_POS","END_POS","SVTYPE_ORIG","CALLER_ID",
                          "REF","ALT","QUAL_SCORE","FILTER","CIPOS","CIEND","SVLEN",
                                                 "CNVLEN","SVLEN_ALL","GT","SVTYPE"
-    '''
-    rest_header = ["SV_ID","CHROM","START_POS","END_POS","SVTYPE","CALLER_ID",
+                      ]
+    else:
+        rest_header = ["SV_ID","CHROM","START_POS","END_POS","SVTYPE","CALLER_ID",
                          "REF","ALT","QUAL_SCORE","FILTER","CIPOS","CIEND","SVLEN",
                                                 "GT"
-                  ]
+                      ]
+
     gn_header   = ["GN_SAME_ID","GN_SAME_COUNT","GN_AC","GN_AF"]
     
     if re.search("38",genome_ref):
@@ -234,22 +239,28 @@ if __name__=="__main__":
             rest_strs.insert(7,'.')
         
         try:
-            #svlen = abs(int(rest_strs[6])) #For NGC samples
-            svlen = abs(int(rest_strs[7]))  #For Demo purpose
+            if re.search('ngc',anal_type,re.IGNORECASE):
+                svlen = abs(int(rest_strs[6])) #For NGC samples
+            else:
+                svlen = abs(int(rest_strs[7]))  #For Demo purpose
         except:
             svlen = en_pos - st_pos 
         try:
-            #cnvlen = abs(int(rest_strs[7])) # For NGC samples
-            cnvlen = svlen # For demo purpose
+            if re.search('ngc',anal_type,re.IGNORECASE):
+                cnvlen = abs(int(rest_strs[7])) # For NGC samples
+            else:
+                cnvlen = svlen # For demo purpose
         except:
             cnvlen = en_pos - st_pos
     
-        svlen_all = ''
+        if not re.search('ngc',anal_type,re.IGNORECASE):
+            svlen_all = ''
+        else:
        
-        # Commeted. Explicitly for NGC samples (Manta & Canvas calls
-        #svlen_all = str((svlen+cnvlen)/2)
-        #rest_strs.insert(8,str(cnvlen))
-        #rest_strs.insert(9,svlen_all)
+            # Commeted. Explicitly for NGC samples (Manta & Canvas calls
+            svlen_all = str((svlen+cnvlen)/2)
+            #rest_strs.insert(8,str(cnvlen))
+            rest_strs.insert(8,svlen_all)
 
         rest_list = ["\t".join(rest_strs)]
         gn_list   = ["\t".join(gn_hash[keys])]
