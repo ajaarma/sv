@@ -390,7 +390,7 @@ class SLURM:
         for i,db in enumerate(db_list):
             if db == "ngc" and re.search("38",genome_ref):
                 db_list[i] = "ngc38"
-                db_list.append("ngclov")
+                #db_list.append("ngclov")
             if db == "ngc" and re.search("37",genome_ref):
                 db_list[i] = "ngc37"
 
@@ -450,7 +450,7 @@ class SLURM:
 
             elif db in ["dbvar","gnomad","ngc38","ngclov","decipher","ngc37",
                                  'ens_trans','ens_exon','ref_gene','ref_exon',
-                                                                       'user']:
+                                                        'promoter','blacklist']:
 
                 cmd = "bcftools query -f \"%CHROM+%POS+%INFO/END+%INFO/SVTYPE+"\
                       "%ID+[%GT]\\t%INFO/CIPOS\\t%INFO/CIEND\\t%INFO/"+db+\
@@ -521,7 +521,7 @@ class SLURM:
         return out_annotDB, wh
 
     def writeSlurmOverlapMerge(self,configDict,manifest,ngc_id,fam_id,xml_file,
-                                      out_annotdb,tmp_stat_file,genome_ref,wh):
+                               out_annotdb,tmp_stat_file,genome_ref,anal_type,wh):
 
         db_list = configDict["annoDB"]["db"]["value"]
         db_list = [str(x.strip()) for x in db_list]
@@ -629,7 +629,7 @@ class SLURM:
         for ovFrac in ovFrac_list:
             merge_cmd = ["python",mergeBin,'-i',rest_file,'-m',manifest,
                             '-a',out_overlap,'-f',ngc_id,'-r',genome_ref, 
-                                                             '-o',ovFrac
+                            '-o',ovFrac,'-s',anal_type
                         ] 
             print >>wh," ".join(merge_cmd)
         
@@ -653,7 +653,9 @@ class SLURM:
         print >>wh, 'echo \" Begin of formatting of genotype of merged step \"'
         fmt_gt_script = script_path+'/'+configDict['formatGT']['scripts']
         refGenome = configDict['general']['genomeBuild']
-        par_file = configDict['par'][refGenome]
+        par_file = '/'.join([configDict['general']['resourceDir'],
+                             configDict['par'][refGenome]
+                            ])
         out_ovp_mrg_fmt_list = []
 
 
@@ -682,11 +684,14 @@ class SLURM:
         print >>wh,"########### Starting Family filtering for family: ",\
                     fam_id," ############\n"
         print >>wh, "\necho \"Begin of Family-Filtering step\"\n" 
-       
+      
+        resource_path = configDict['general']['resourceDir']
         script_path   = os.path.dirname(os.path.dirname(os.path.abspath( __file__ )))
         famBin        = script_path+'/'+configDict['famFilter']['famBin']
         ovFrac_list   = re.split('\,',configDict['overlapMerge']['ovFrac'])
-        imprint_genes = configDict['imprint']
+        imprint_genes = '/'.join([resource_path,
+                                  configDict['imprint']
+                                 ])
         ref_genome    = configDict['general']['genomeBuild']
 
         filter_dir    = fam_ngc_dir+'/filter/'
@@ -1174,7 +1179,7 @@ class DEMO:
         for ovFrac in ovFrac_list:
             merge_cmd = ["python",mergeBin,'-i',rest_file,'-m',manifest,
                             '-a',out_overlap,'-f',ngc_id,'-r',genome_ref, 
-                                                             '-o',ovFrac
+                            '-o',ovFrac,'-s',anal_type
                         ] 
             print >>wh," ".join(merge_cmd)
         

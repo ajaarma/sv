@@ -262,7 +262,7 @@ class CONFIG:
                  description = 'python mergeAnnotVCF.py -m <manifest-file> \n' 
                                '-i <input-rest-file> -a <annot-dir>'
                                '-f <family-id>  -r <genome-build>'
-                               '-o <overlap-frac> ' 
+                               '-o <overlap-frac> -s <analysis-type>' 
                  )
         parser.add_argument('-m','--mainifest',help='Input manifest file',
                             action='store',dest='manifestFile',required=True)
@@ -276,6 +276,9 @@ class CONFIG:
                             dest='refFile',required=True)
         parser.add_argument('-o','--frac',help='Overlap fraction',
                              action='store',dest='overlapFrac',required=True)
+        parser.add_argument('-s','--analType',help='Analysis Type: ngc/demo',
+                             action='store',dest='analType',required=True)
+
 
         self.results = parser.parse_args()
         self.m_file = os.path.abspath(self.results.manifestFile)
@@ -284,9 +287,12 @@ class CONFIG:
         self.fam_id = self.results.famID
         self.ref_file = self.results.refFile
         self.overlap_frac = self.results.overlapFrac
+        self.anal_type = self.results.analType
 
         cmd_dict = {'manifest':self.m_file,'rest':self.rest_file,'annoDir':self.anno_dir,
-                    'fam':self.fam_id,'ref':self.ref_file,'overlap':self.overlap_frac}
+                    'fam':self.fam_id,'ref':self.ref_file,'overlap':self.overlap_frac,
+                    'analType':self.anal_type
+                   }
 
         print "\n\n"
         print 'Entered Manifest file is: ',self.m_file
@@ -295,6 +301,8 @@ class CONFIG:
         print 'Entered Family ID is: ',self.fam_id
         print 'Entered Reference genome built is: ',self.ref_file
         print 'Entered Overlap fraction is: ',self.overlap_frac
+        print 'Entered Analysis type is: ',self.anal_type
+
         print "\n\n"
 
         return cmd_dict
