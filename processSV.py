@@ -1,12 +1,14 @@
 #!/usr/bin/python
 
-#######################################################################
+############################################################################################
+# Description: Program to process structural variants (SVs) of NGC Trios called
+#              by Illumina v38 pipeline using Manta,Canvas. Generates shell scripts that can
+#              be run on SLURM/LSF clusters.
 #
-# Usage: python processXML.py -d /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/misc/TEST_SNV/759_samples_final.txt -a CONFIG/Analysis.xml -w
-# /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/misc/TEST_SNV -g /home/aak64/rds/rds-flr24-wgs10k-ngc/WGS10K/data/NGC/us/misc/TEST_SNV/759_genders.txt -e gvcfGT -p "20190306_gvcf"
+# Author: Ajay A. Kumar 
 #
 #
-########################################################################
+###########################################################################################
 
 
 import re,sys,getopt,os,datetime,subprocess
@@ -145,8 +147,9 @@ if __name__=="__main__":
                     #Step-3: Overlap percentage merging
                     out_ovp_mrg_list,swh = objS.writeSlurmOverlapMerge(configDict,
                                                            manifest,ngc_id,fam_id,
-                                                           xml_file,out_overlap,
-                                                    tmp_stat_file,genome_ref,swh
+                                                             xml_file,out_overlap,
+                                                         tmp_stat_file,genome_ref,
+                                                                    anal_type,swh
                                                                       )
 
                     #Optional: sub-step 3; Format GT if they are missing specially
@@ -186,8 +189,9 @@ if __name__=="__main__":
                     #Step-3: Overlap percentage merging
                     out_ovp_mrg_list,swh = objD.writeDemoOverlapMerge(configDict,
                                                            manifest,ngc_id,fam_id,
-                                                           xml_file,out_overlap,
-                                                    tmp_stat_file,genome_ref,swh
+                                                             xml_file,out_overlap,
+                                                         tmp_stat_file,genome_ref,
+                                                                    anal_type,swh
                                                                       )
                     ''' 
                      
