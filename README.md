@@ -37,7 +37,10 @@ The pipeline and filtering pipeline has been optimized for NGC samples where SVs
 	$ conda install -c conda-forge r-dplyr
 	$ conda install -c conda-forge r-plyr
 	$ conda install -c conda-forge r-data.table=1.13.4
+	$ conda install -c conda-forge r-future
 	$ conda install -c conda-forge r-future.apply
+	$ conda install -c bioconda r-r.methodss3
+	$ conda install -c conda-forge r-r.oo
 	$ conda install -c conda-forge r-r.utils 
 	$ conda install -c bioconda ucsc-liftover
 	$ conda install -c bioconda vcfanno
