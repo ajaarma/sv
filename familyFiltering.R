@@ -1,12 +1,11 @@
-loc4_0 = "/hps/software/users/dunham/R_lib/4.0.3/"
-require("data.table",lib=loc4_0)
-require("plyr",lib=loc4_0)
-require("future",lib=loc4_0)
-require("future.apply",lib=loc4_0)
-require('optparse',lib=loc4_0)
-require('R.methodsS3',lib=loc4_0)
-require('R.oo',lib=loc4_0)
-require('R.utils',lib=loc4_0)
+require("data.table")
+require("plyr")
+require("future")
+require("future.apply")
+require('optparse')
+require('R.methodsS3')
+require('R.oo')
+require('R.utils')
 
 
 `%ni%` <- Negate(`%in%`)
