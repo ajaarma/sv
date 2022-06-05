@@ -80,6 +80,7 @@ def formatGT(sample_gt,qual,gender,chr_num,sv_id,par_file):
 
         else: # All Canvas related calls and genotypes
             cv_gtrs = re.split('\:',ele)
+            #print cv_gtrs
             cv_gt = float(cv_gtrs[2])
             cv_gt_str=[]
             if not re.search('X|Y',chr_num): #autosomal regions
@@ -131,7 +132,7 @@ def formatGT(sample_gt,qual,gender,chr_num,sv_id,par_file):
             
             out_gt_strs.append(cv_gt_str)
 
-        
+    out_gt_strs = [x for x in out_gt_strs if x]
     return '-'.join(out_gt_strs)
          
 
@@ -171,18 +172,18 @@ if __name__=="__main__":
             sv_id = strs[0]
             chr_num = strs[1]
             qual = strs[9]
-            k = 26
+            #k = 26 # If NGC liftover is present
+            pb_gt_index = 25
             if re.search('37',ref_genome):
-                proband_gt = strs[25]
-                mother_gt  = strs[26]
-                father_gt  = strs[27]
-                sib_gt     = strs[28]
+                proband_gt = strs[pb_gt_index]
+                mother_gt  = strs[pb_gt_index+1]
+                father_gt  = strs[pb_gt_index+2]
+                sib_gt     = strs[pb_gt_index+3]
             elif re.search('38',ref_genome):
-                proband_gt = strs[28]
-                mother_gt  = strs[29]
-                father_gt  = strs[30]
-                sib_gt     = strs[31]
-
+                proband_gt = strs[pb_gt_index]
+                mother_gt  = strs[pb_gt_index+1]
+                father_gt  = strs[pb_gt_index+2]
+                sib_gt     = strs[pb_gt_index+3]
 
             out_strs = [sv_id,qual,proband_gt,mother_gt,father_gt,sib_gt]
            
@@ -209,16 +210,17 @@ if __name__=="__main__":
                     sib_gt_fmt = sib_gt
            
             strs_fmt = strs
+            
             if re.search('grch37',ref_genome):
-                strs_fmt[25] = proband_gt_fmt
-                strs_fmt[26] = mother_gt_fmt
-                strs_fmt[27] = father_gt_fmt
-                strs_fmt[28] = sib_gt_fmt
+                strs_fmt[pb_gt_index] = proband_gt_fmt
+                strs_fmt[pb_gt_index+1] = mother_gt_fmt
+                strs_fmt[pb_gt_index+2] = father_gt_fmt
+                strs_fmt[pb_gt_index+3] = sib_gt_fmt
             elif re.search('grch38',ref_genome):
-                strs_fmt[28] = proband_gt_fmt
-                strs_fmt[29] = mother_gt_fmt
-                strs_fmt[30] = father_gt_fmt
-                strs_fmt[31] = sib_gt_fmt
+                strs_fmt[pb_gt_index] = proband_gt_fmt
+                strs_fmt[pb_gt_index+1] = mother_gt_fmt
+                strs_fmt[pb_gt_index+2] = father_gt_fmt
+                strs_fmt[pb_gt_index+3] = sib_gt_fmt
       
             print >>wh,'\t'.join(strs_fmt)
         else:
